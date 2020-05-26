@@ -1,0 +1,16 @@
+[
+{
+  "modid": "garbageenergy",
+  "name": "Garbage Energy",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["gromovjm"],
+  "credits": "",
+  "logoFile": "äøïùşçòï",
+  "screenshots": [],
+  "dependencies": []
+}
+]
