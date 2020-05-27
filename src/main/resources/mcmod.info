@@ -1,15 +1,15 @@
 [
 {
-  "modid": "garbageenergy",
+  "modid": "GarbageEnergy",
   "name": "Garbage Energy",
-  "description": "",
+  "description": "Get Energy from your garbage!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
   "authorList": ["gromovjm"],
   "credits": "",
-  "logoFile": "äøïùþçòï",
+  "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": []
 }

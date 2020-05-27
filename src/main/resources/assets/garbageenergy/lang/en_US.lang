@@ -1,5 +1,10 @@
+// items
+item.GarbageEnergy.wrench.name=Wrench
+
 // blocks
-tile.GeneratorCore.name=Generator core
+tile.GarbageEnergy.generator.core.name=Generator core
+tile.GarbageEnergy.generator.receiver.name=Receiver
+tile.GarbageEnergy.generator.transmitter.name=Energy transmitter
 
 // creativetabs
 itemGroup.garbageEnergy=Garbage energy

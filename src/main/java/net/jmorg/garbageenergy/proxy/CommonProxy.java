@@ -1,15 +1,19 @@
 package net.jmorg.garbageenergy.proxy;
 
+import cofh.core.Proxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import net.jmorg.garbageenergy.common.Block;
+import net.jmorg.garbageenergy.common.GEBlock;
+import net.jmorg.garbageenergy.common.Item;
 
-public class CommonProxy
+public class CommonProxy extends Proxy
 {
-    public void preInit(FMLPreInitializationEvent event)
+    @Override
+    public void preInit()
     {
-        Block.registerBlocks();
+        super.preInit();
+        GEBlock.registerBlocks();
+        Item.registerItems();
     }
 
     public void init(FMLInitializationEvent event)

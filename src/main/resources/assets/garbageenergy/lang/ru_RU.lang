@@ -1,5 +1,10 @@
+// items
+item.GarbageEnergy.wrench.name=Гаечный ключ
+
 // blocks
-tile.GeneratorCore.name=Ядро генератора
+tile.GarbageEnergy.generator.core.name=Ядро генератора
+tile.GarbageEnergy.generator.receiver.name=Приёмщик
+tile.GarbageEnergy.generator.transmitter.name=Передатчик энергии
 
 // creativetabs
 itemGroup.garbageEnergy=Мусорная энергия
