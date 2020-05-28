@@ -1,14 +1,25 @@
 package net.jmorg.garbageenergy.common.bloks.generator;
 
-import cofh.core.block.TileCoFHBase;
-import net.jmorg.garbageenergy.GarbageEnergy;
+import net.jmorg.garbageenergy.common.bloks.TileRSControl;
 import net.jmorg.garbageenergy.common.bloks.generator.BlockGenerator.Types;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
-public abstract class TileGeneratorBase extends TileCoFHBase
+public abstract class TileGeneratorBase extends TileRSControl
 {
     protected final byte type;
-    public ItemStack[] inventory = new ItemStack[0];
+    public static final boolean[] enableSecurity = new boolean[BlockGenerator.Types.values().length];
+
+    @Override
+    public String getName()
+    {
+        return tileName;
+    }
+
+    @Override
+    public int getType()
+    {
+        return type;
+    }
 
     public TileGeneratorBase()
     {
@@ -17,18 +28,32 @@ public abstract class TileGeneratorBase extends TileCoFHBase
 
     public TileGeneratorBase(Types type)
     {
-        this.type = (byte) type.ordinal();
+        this.type = ((byte) type.ordinal());
+    }
+
+    public void updateFromNBT(NBTTagCompound nbt)
+    {
+    }
+
+    //
+    // NBT methods.
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+        super.readFromNBT(nbt);
+
+        if (nbt.hasKey("Name")) {
+            tileName = nbt.getString("Name");
+        }
     }
 
     @Override
-    public String getName()
+    public void writeToNBT(NBTTagCompound nbt)
     {
-        return "tile." + GarbageEnergy.MODID + ".generator." + BlockGenerator.NAMES[type];
-    }
+        super.writeToNBT(nbt);
 
-    @Override
-    public int getType()
-    {
-        return type;
+        if (!tileName.isEmpty()) {
+            nbt.setString("Name", tileName);
+        }
     }
 }

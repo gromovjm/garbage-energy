@@ -6,5 +6,7 @@ tile.GarbageEnergy.generator.core.name=Generator core
 tile.GarbageEnergy.generator.receiver.name=Receiver
 tile.GarbageEnergy.generator.transmitter.name=Energy transmitter
 
+tile.GarbageEnergy.generator.core.count=[Counter] Count: %d
+
 // creativetabs
 itemGroup.garbageEnergy=Garbage energy

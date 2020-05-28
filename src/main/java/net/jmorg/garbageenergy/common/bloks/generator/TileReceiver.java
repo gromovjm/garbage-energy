@@ -7,7 +7,7 @@ public class TileReceiver extends TileGeneratorBase
 {
     public static void initialize()
     {
-        GameRegistry.registerTileEntity(TileReceiver.class, "garbageEnergy.generator.receiver");
+        GameRegistry.registerTileEntity(TileReceiver.class, "GarbageEnergy.generator.receiver");
     }
 
     public TileReceiver()

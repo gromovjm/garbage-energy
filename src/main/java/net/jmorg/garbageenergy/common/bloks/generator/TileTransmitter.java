@@ -7,7 +7,7 @@ public class TileTransmitter extends TileGeneratorBase
 {
     public static void initialize()
     {
-        GameRegistry.registerTileEntity(TileTransmitter.class, "garbageEnergy.generator.transmitter");
+        GameRegistry.registerTileEntity(TileTransmitter.class, "GarbageEnergy.generator.transmitter");
     }
 
     public TileTransmitter()

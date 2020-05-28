@@ -1,10 +1,12 @@
 package net.jmorg.garbageenergy.common.items.tool;
 
 import cofh.api.block.IDismantleable;
+import cofh.api.item.IToolHammer;
 import cofh.lib.util.helpers.BlockHelper;
 import cofh.lib.util.helpers.ServerHelper;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -12,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class WrenchTool extends ToolGeneric
+public class WrenchTool extends ToolGeneric implements IToolHammer
 {
     public WrenchTool()
     {
@@ -66,5 +68,17 @@ public class WrenchTool extends ToolGeneric
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int hitSide, float hitX, float hitY, float hitZ)
     {
         return true;
+    }
+
+    @Override
+    public boolean isUsable(ItemStack itemStack, EntityLivingBase entityLivingBase, int i, int i1, int i2)
+    {
+        return false;
+    }
+
+    @Override
+    public void toolUsed(ItemStack itemStack, EntityLivingBase entityLivingBase, int i, int i1, int i2)
+    {
+
     }
 }

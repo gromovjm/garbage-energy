@@ -1,27 +1,39 @@
 package net.jmorg.garbageenergy.common.bloks;
 
+import cofh.api.tileentity.IRedstoneControl;
 import cofh.api.tileentity.ISecurable;
 import cofh.core.block.BlockCoFHBase;
-import cofh.core.block.TileCoFHBase;
 import cofh.core.util.CoreUtils;
+import cofh.lib.util.helpers.ItemHelper;
+import cofh.lib.util.helpers.RedstoneControlHelper;
+import cofh.lib.util.helpers.SecurityHelper;
+import cofh.lib.util.helpers.ServerHelper;
+import cpw.mods.fml.common.eventhandler.Event;
+import net.jmorg.garbageenergy.GarbageEnergy;
+import net.jmorg.garbageenergy.utils.Utils;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 
 public abstract class BaseBlock extends BlockCoFHBase
 {
+    protected boolean basicGui = true;
+
     public BaseBlock(Material material)
     {
         super(material);
     }
 
-    public TileEntity getTileEntity(World world, int x, int y, int z)
+    public TileEntity getTile(World world, int x, int y, int z)
     {
         return world.getTileEntity(x, y, z);
     }
@@ -31,21 +43,100 @@ public abstract class BaseBlock extends BlockCoFHBase
         return world.getBlockMetadata(x, y, z);
     }
 
+    public static String getTileName(String tileName)
+    {
+        return "tile." + GarbageEnergy.MODID + "." + tileName + ".name";
+    }
+
+    @Override
+    public NBTTagCompound getItemStackTag(World world, int x, int y, int z)
+    {
+        TileEntity tile = getTile(world, x, y, z);
+
+        NBTTagCompound retTag = null;
+
+        if (tile instanceof BaseTile && (!((BaseTile) tile).tileName.isEmpty())) {
+            retTag = ItemHelper.setItemStackTagName(retTag, ((BaseTile) tile).tileName);
+        }
+        if (tile instanceof TileInventory && ((TileInventory) tile).isSecured()) {
+            retTag = SecurityHelper.setItemStackTagSecure(retTag, (ISecurable) tile);
+        }
+        if (tile instanceof IRedstoneControl) {
+            retTag = RedstoneControlHelper.setItemStackTagRS(retTag, (IRedstoneControl) tile);
+        }
+
+        return retTag;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase living, ItemStack stack)
+    {
+        TileEntity tile = getTile(world, x, y, z);
+
+        if (tile instanceof BaseTile) {
+            ((BaseTile) tile).setTileName(ItemHelper.getNameFromItemStack(stack));
+        }
+
+        super.onBlockPlacedBy(world, x, y, z, living, stack);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int hitSide, float hitX, float hitY, float hitZ)
+    {
+        PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, hitSide, world);
+        if (MinecraftForge.EVENT_BUS.post(event)
+                || event.getResult() == Event.Result.DENY
+                || event.useBlock == Event.Result.DENY) {
+            return false;
+        }
+
+        if (player.isSneaking()) {
+            if (Utils.isHoldingUsableWrench(player, x, y, z)) {
+                if (ServerHelper.isServerWorld(world) && canDismantle(player, world, x, y, z)) {
+                    dismantleBlock(player, world, x, y, z, false);
+                }
+                Utils.usedWrench(player, x, y, z);
+                return true;
+            }
+            return false;
+        }
+
+        BaseTile tile = (BaseTile) world.getTileEntity(x, y, z);
+        if (tile == null) {
+            return false;
+        }
+
+        if (Utils.isHoldingUsableWrench(player, x, y, z)) {
+            if (ServerHelper.isServerWorld(world)) {
+                tile.onWrench(player, hitSide);
+            }
+            Utils.usedWrench(player, x, y, z);
+            return true;
+        }
+
+        if (basicGui) {
+            if (ServerHelper.isServerWorld(world)) {
+                return tile.openGui(player);
+            }
+            return tile.hasGui();
+        }
+
+        return false;
+    }
+
     @Override
     public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, NBTTagCompound nbt, World world, int x, int y, int z, boolean returnDrops, boolean simulate)
     {
-        TileEntity tile = getTileEntity(world, x, y, z);
-        int bMeta = getMetadata(world, x, y, z);
-
-        ItemStack dropBlock = new ItemStack(this, 1, bMeta);
+        TileEntity tile = getTile(world, x, y, z);
+        int metadata = getMetadata(world, x, y, z);
+        ItemStack dropBlock = new ItemStack(this, 1, metadata);
 
         if (nbt != null && !nbt.hasNoTags()) {
             dropBlock.setTagCompound(nbt);
         }
-
         if (!simulate) {
-            if (tile instanceof TileCoFHBase) {
-                ((TileCoFHBase) tile).blockDismantled();
+            if (tile instanceof BaseTile) {
+                ((BaseTile) tile).blockDismantled();
             }
             world.setBlockToAir(x, y, z);
 
@@ -63,7 +154,7 @@ public abstract class BaseBlock extends BlockCoFHBase
                 world.spawnEntityInWorld(item);
 
                 if (player != null) {
-                    CoreUtils.dismantleLog(player.getCommandSenderName(), this, bMeta, x, y, z);
+                    CoreUtils.dismantleLog(player.getCommandSenderName(), this, metadata, x, y, z);
                 }
             }
         }

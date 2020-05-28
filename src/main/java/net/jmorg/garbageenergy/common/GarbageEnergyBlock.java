@@ -8,23 +8,29 @@ import net.minecraft.block.Block;
 
 import java.util.ArrayList;
 
-public class GEBlock
+public class GarbageEnergyBlock
 {
     public static ArrayList<IInitializer> blockList = new ArrayList<IInitializer>();
 
     public static Block blockGenerator;
 
-    private GEBlock() {}
+    private GarbageEnergyBlock()
+    {
+    }
 
     public static void registerBlocks()
     {
         blockGenerator = addBlock(new BlockGenerator());
 
         GameRegistry.registerBlock(blockGenerator, ItemBlockGenerator.class, "Generator");
+
+        for (IInitializer initializer : blockList) {
+            initializer.initialize();
+        }
     }
 
-    public static Block addBlock(Block block) {
-
+    public static Block addBlock(Block block)
+    {
         blockList.add((IInitializer) block);
         return block;
     }

@@ -3,7 +3,7 @@ package net.jmorg.garbageenergy.proxy;
 import cofh.core.Proxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import net.jmorg.garbageenergy.common.GEBlock;
+import net.jmorg.garbageenergy.common.GarbageEnergyBlock;
 import net.jmorg.garbageenergy.common.Item;
 
 public class CommonProxy extends Proxy
@@ -12,7 +12,7 @@ public class CommonProxy extends Proxy
     public void preInit()
     {
         super.preInit();
-        GEBlock.registerBlocks();
+        GarbageEnergyBlock.registerBlocks();
         Item.registerItems();
     }
 
