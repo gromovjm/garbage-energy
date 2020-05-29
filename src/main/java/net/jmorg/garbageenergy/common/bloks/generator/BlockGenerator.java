@@ -1,16 +1,19 @@
 package net.jmorg.garbageenergy.common.bloks.generator;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.bloks.BaseBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -19,6 +22,11 @@ import java.util.List;
 
 public class BlockGenerator extends BaseBlock
 {
+    public static IIcon[] face = new IIcon[Types.values().length];
+    public static IIcon generatorBottomSide;
+    public static IIcon generatorTopSide;
+    public static IIcon generatorSide;
+
     public static ItemStack core;
     public static ItemStack receiver;
     public static ItemStack transmitter;
@@ -48,6 +56,34 @@ public class BlockGenerator extends BaseBlock
         GameRegistry.registerCustomItemStack("transmitter", transmitter);
 
         return false;
+    }
+
+    @Override
+    public IIcon getIcon(int side, int metadata)
+    {
+        if (side == 0) {
+            return generatorBottomSide;
+        }
+        if (side == 1) {
+            return generatorTopSide;
+        }
+        return side != 3 ? generatorSide : face[metadata % Types.values().length];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister ir)
+    {
+        // Base Textures
+        generatorBottomSide = ir.registerIcon(GarbageEnergy.MODID + ":generator/bottom_side");
+        generatorTopSide = ir.registerIcon(GarbageEnergy.MODID + ":generator/top_side");
+        generatorSide = ir.registerIcon(GarbageEnergy.MODID + ":generator/side");
+
+        // Face Textures
+        for (int i = 0; i < Types.values().length; i++) {
+            face[i] = ir.registerIcon(GarbageEnergy.MODID + ":generator/face_" + NAMES[i]);
+            face[i] = ir.registerIcon(GarbageEnergy.MODID + ":generator/active_face_" + NAMES[i]);
+        }
     }
 
     @Override
