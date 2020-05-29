@@ -1,10 +1,16 @@
-// items
+# items
 item.GarbageEnergy.wrench.name=Гаечный ключ
 
-// blocks
-tile.GarbageEnergy.generator.core.name=Ядро генератора
+# blocks
+tile.GarbageEnergy.generator.itemRf.name=Предметный RF генератор
 tile.GarbageEnergy.generator.receiver.name=Приёмщик
 tile.GarbageEnergy.generator.transmitter.name=Передатчик энергии
 
-// creativetabs
+# CoFHCore GUI tabs
+tab.info.GarbageEnergy.generator.0=Используйте этот генератор чтобы производить RF энергию из ресурсов, которые Вам не нужны.
+tab.info.GarbageEnergy.generator.itemRf.0=Этот генератор производит RF из ненужных Вам предметов.
+tab.info.GarbageEnergy.generator.itemRf.1=Предметы, которые Вы можете сюда положить подписаны.
+tab.info.GarbageEnergy.generator.itemRf.2=Не ложите сюда Ваши алмазы!
+
+# creativetabs
 itemGroup.garbageEnergy=Мусорная энергия

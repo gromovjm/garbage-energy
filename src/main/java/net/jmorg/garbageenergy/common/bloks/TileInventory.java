@@ -2,7 +2,9 @@ package net.jmorg.garbageenergy.common.bloks;
 
 import cofh.api.tileentity.ISecurable;
 import cofh.core.CoFHProps;
+import cofh.core.network.PacketCoFHBase;
 import cofh.lib.util.helpers.SecurityHelper;
+import cofh.lib.util.helpers.ServerHelper;
 import cofh.lib.util.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.mojang.authlib.GameProfile;
@@ -16,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PreYggdrasilConverter;
+import net.minecraft.util.ChatComponentTranslation;
 
 import java.util.UUID;
 
@@ -78,15 +81,21 @@ public abstract class TileInventory extends BaseTile implements IInventory, ISec
     }
 
     @Override
-    public boolean openGui(EntityPlayer player)
+    public boolean openGui(EntityPlayer entityPlayer)
     {
+        if (canPlayerAccess(entityPlayer)) {
+            return super.openGui(entityPlayer);
+        }
+        if (ServerHelper.isServerWorld(worldObj)) {
+            entityPlayer.addChatMessage(new ChatComponentTranslation("chat.cofh.secure", getOwnerName()));
+        }
         return false;
     }
 
     @Override
     public void receiveGuiNetworkData(int i, int j)
     {
-        canAccess = j == 0;
+        canAccess = j != 0;
     }
 
     @Override
@@ -332,6 +341,34 @@ public abstract class TileInventory extends BaseTile implements IInventory, ISec
         }
         if (list.tagCount() > 0) {
             nbt.setTag("Inventory", list);
+        }
+    }
+
+    @Override
+    public PacketCoFHBase getPacket()
+    {
+        PacketCoFHBase payload = super.getPacket();
+
+        payload.addByte((byte) access.ordinal());
+        payload.addUUID(owner.getId());
+        payload.addString(owner.getName());
+
+        return payload;
+    }
+
+    @Override
+    public void handleTilePacket(PacketCoFHBase payload, boolean isServer)
+    {
+        super.handleTilePacket(payload, isServer);
+
+        access = ISecurable.AccessMode.values()[payload.getByte()];
+
+        if (!isServer) {
+            owner = CoFHProps.DEFAULT_OWNER;
+            setOwner(new GameProfile(payload.getUUID(), payload.getString()));
+        } else {
+            payload.getUUID();
+            payload.getString();
         }
     }
 }

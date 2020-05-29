@@ -11,7 +11,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -27,31 +26,32 @@ public class BlockGenerator extends BaseBlock
     public static IIcon generatorTopSide;
     public static IIcon generatorSide;
 
-    public static ItemStack core;
+    public static ItemStack itemRF;
     public static ItemStack receiver;
     public static ItemStack transmitter;
 
     public BlockGenerator()
     {
         super(Material.rock);
-        setBlockName(GarbageEnergy.MODID + ".generator");
         setCreativeTab(GarbageEnergy.garbageEnergyTab);
         setHardness(15.0F);
         setResistance(25.0F);
+
+        basicGui = true;
     }
 
     @Override
     public boolean initialize()
     {
-        TileCore.initialize();
+        TileItemRFGenerator.initialize();
         TileReceiver.initialize();
         TileTransmitter.initialize();
 
-        core = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, Types.CORE.ordinal()));
+        itemRF = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, Types.ITEM_RF.ordinal()));
         receiver = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, Types.RECEIVER.ordinal()));
         transmitter = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, Types.TRANSMITTER.ordinal()));
 
-        GameRegistry.registerCustomItemStack("core", core);
+        GameRegistry.registerCustomItemStack("item_rf", itemRF);
         GameRegistry.registerCustomItemStack("receiver", receiver);
         GameRegistry.registerCustomItemStack("transmitter", transmitter);
 
@@ -94,7 +94,7 @@ public class BlockGenerator extends BaseBlock
 
     public static void refreshItemStacks()
     {
-        core = ItemBlockGenerator.setDefaultTag(core);
+        itemRF = ItemBlockGenerator.setDefaultTag(itemRF);
         receiver = ItemBlockGenerator.setDefaultTag(receiver);
         transmitter = ItemBlockGenerator.setDefaultTag(transmitter);
     }
@@ -118,8 +118,8 @@ public class BlockGenerator extends BaseBlock
         if (metadata >= Types.values().length) return null;
 
         switch (Types.values()[metadata]) {
-            case CORE:
-                return new TileCore();
+            case ITEM_RF:
+                return new TileItemRFGenerator();
             case RECEIVER:
                 return new TileReceiver();
             case TRANSMITTER:
@@ -160,38 +160,36 @@ public class BlockGenerator extends BaseBlock
         return true;
     }
 
-    @Override
-    public NBTTagCompound getItemStackTag(World world, int x, int y, int z)
-    {
-        NBTTagCompound tag = super.getItemStackTag(world, x, y, z);
-        TileGeneratorBase tile = (TileGeneratorBase) getTile(world, x, y, z);
-
-        if (tag != null && tile instanceof TileCore) {
-            tag.setInteger("count", ((TileCore) tile).count);
-        }
-
-        return tag;
-    }
+//    @Override
+//    public NBTTagCompound getItemStackTag(World world, int x, int y, int z)
+//    {
+//        NBTTagCompound tag = super.getItemStackTag(world, x, y, z);
+//        TileGeneratorBase tile = (TileGeneratorBase) getTile(world, x, y, z);
+//
+//        if (tag != null && tile instanceof TileCore) {
+//            tag.setInteger("count", ((TileCore) tile).count);
+//        }
+//
+//        return tag;
+//    }
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase living, ItemStack stack)
     {
-        ((TileGeneratorBase) getTile(world, x, y, z)).updateFromNBT(stack.getTagCompound());
+        TileGeneratorBase tile = (TileGeneratorBase) getTile(world, x, y, z);
+
+        if (tile != null) {
+            tile.updateFromNBT(stack.getTagCompound());
+        }
+
         super.onBlockPlacedBy(world, x, y, z, living, stack);
     }
 
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-    {
-        if (((TileGeneratorBase) getTile(world, x, y, z)).onBlockActivated(world, x, y, z, player, side, hitX, hitY, hitZ)) return true;
-        return super.onBlockActivated(world, x, y, z, player, side, hitX, hitY, hitZ);
-    }
-
-    public static final String[] NAMES = {"core", "receiver", "transmitter"};
+    public static final String[] NAMES = {"itemRf", "receiver", "transmitter"};
 
     public enum Types
     {
-        CORE,
+        ITEM_RF,
         RECEIVER,
         TRANSMITTER;
     }

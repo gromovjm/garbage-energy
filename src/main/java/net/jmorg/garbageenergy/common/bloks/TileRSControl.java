@@ -3,15 +3,18 @@ package net.jmorg.garbageenergy.common.bloks;
 import cofh.api.tileentity.IRedstoneControl;
 import cofh.asm.relauncher.CoFHSide;
 import cofh.asm.relauncher.Strippable;
+import cofh.core.network.PacketCoFHBase;
 import cofh.lib.audio.ISoundSource;
 import cofh.lib.audio.SoundTile;
 import cofh.lib.util.helpers.ServerHelper;
+import cofh.lib.util.helpers.SoundHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.jmorg.garbageenergy.network.GarbageEnergyPacket;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.nbt.NBTTagCompound;
 
-@Strippable(value="cofh.lib.audio.ISoundSource", side=CoFHSide.SERVER)
+@Strippable(value = "cofh.lib.audio.ISoundSource", side = CoFHSide.SERVER)
 public abstract class TileRSControl extends TileInventory implements IRedstoneControl, ISoundSource
 {
     public boolean isActive;
@@ -27,8 +30,14 @@ public abstract class TileRSControl extends TileInventory implements IRedstoneCo
         isPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 
         if (wasPowered != isPowered) {
+            GarbageEnergyPacket.sendRSPowerUpdatePacketToClients(this, worldObj, xCoord, yCoord, zCoord);
             onRedstoneUpdate();
         }
+    }
+
+    protected boolean sendRedstoneUpdates()
+    {
+        return false;
     }
 
     public final boolean redstoneControlOrDisable()
@@ -62,7 +71,9 @@ public abstract class TileRSControl extends TileInventory implements IRedstoneCo
     public final void setControl(ControlMode control)
     {
         rsMode = control;
-        if (!ServerHelper.isClientWorld(worldObj)) {
+        if (ServerHelper.isClientWorld(worldObj)) {
+            GarbageEnergyPacket.sendRSConfigUpdatePacketToServer(this, this.xCoord, this.yCoord, this.zCoord);
+        } else {
             sendUpdatePacket(Side.CLIENT);
         }
     }
@@ -118,5 +129,41 @@ public abstract class TileRSControl extends TileInventory implements IRedstoneCo
         rsTag.setBoolean("Power", isPowered);
         rsTag.setByte("Mode", (byte) rsMode.ordinal());
         nbt.setTag("RS", rsTag);
+    }
+
+    @Override
+    public PacketCoFHBase getPacket()
+    {
+        PacketCoFHBase payload = super.getPacket();
+
+        payload.addBool(isPowered);
+        payload.addByte(rsMode.ordinal());
+        payload.addBool(isActive);
+
+        return payload;
+    }
+
+    /* ITilePacketHandler */
+    @Override
+    public void handleTilePacket(PacketCoFHBase payload, boolean isServer)
+    {
+        super.handleTilePacket(payload, isServer);
+
+        isPowered = payload.getBool();
+        rsMode = ControlMode.values()[payload.getByte()];
+
+        if (!isServer) {
+            boolean prevActive = isActive;
+
+            isActive = payload.getBool();
+
+            if (isActive && !prevActive) {
+                if (getSoundName() != null && !getSoundName().isEmpty()) {
+                    SoundHelper.playSound(getSound());
+                }
+            }
+        } else {
+            payload.getBool();
+        }
     }
 }

@@ -2,6 +2,7 @@ package net.jmorg.garbageenergy.common;
 
 import cofh.api.core.IInitializer;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.bloks.generator.BlockGenerator;
 import net.jmorg.garbageenergy.common.bloks.generator.ItemBlockGenerator;
 import net.minecraft.block.Block;
@@ -27,6 +28,8 @@ public class GarbageEnergyBlock
         for (IInitializer initializer : blockList) {
             initializer.initialize();
         }
+
+        GarbageEnergy.log.info(GarbageEnergy.MODNAME + ": Blocks are registered.");
     }
 
     public static Block addBlock(Block block)

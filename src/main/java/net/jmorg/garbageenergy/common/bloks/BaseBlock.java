@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public abstract class BaseBlock extends BlockCoFHBase
 {
-    protected boolean basicGui = true;
+    protected boolean basicGui = false;
 
     public BaseBlock(Material material)
     {
@@ -101,7 +101,7 @@ public abstract class BaseBlock extends BlockCoFHBase
             return false;
         }
 
-        BaseTile tile = (BaseTile) world.getTileEntity(x, y, z);
+        BaseTile tile = (BaseTile) getTile(world, x, y, z);
         if (tile == null) {
             return false;
         }
