@@ -1,4 +1,4 @@
-package net.jmorg.garbageenergy.common.bloks;
+package net.jmorg.garbageenergy.common.blocks;
 
 import cofh.api.tileentity.IPortableData;
 import cofh.core.block.TileCoFHBase;
@@ -17,13 +17,11 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
 {
     public String tileName = "";
 
-    public boolean setTileName(String name)
+    public void setTileName(String name)
     {
-        if (name.isEmpty()) {
-            return false;
+        if (!name.isEmpty()) {
+            tileName = name;
         }
-        tileName = name;
-        return true;
     }
 
     @Override
@@ -32,9 +30,17 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
         return false;
     }
 
+    //
+    // Gui methods.
     public boolean hasGui()
     {
         return false;
+    }
+
+    @Override
+    public int getInvSlotCount()
+    {
+        return 0;
     }
 
     @Override
@@ -42,7 +48,6 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
     {
         if (hasGui()) {
             entityPlayer.openGui(GarbageEnergy.instance, GuiHandler.TILE_GUI, worldObj, xCoord, yCoord, zCoord);
-            GarbageEnergy.log.info("Gui opened.");
             return true;
         }
 
@@ -60,21 +65,8 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
         }
     }
 
-    @Override
-    public int getInvSlotCount()
+    public void updateFromNBT(NBTTagCompound nbt)
     {
-
-        return 0;
-    }
-
-    protected boolean readPortableTagInternal(EntityPlayer player, NBTTagCompound tag)
-    {
-        return false;
-    }
-
-    protected boolean writePortableTagInternal(EntityPlayer player, NBTTagCompound tag)
-    {
-        return false;
     }
 
     @Override
@@ -92,25 +84,7 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
         return payload;
     }
 
-    public PacketCoFHBase getFluidPacket()
-    {
-        PacketCoFHBase payload = PacketTileInfo.newPacket(this);
-        payload.addByte(GarbageEnergyPacket.PacketID.FLUID.ordinal());
-        return payload;
-    }
-
-    public PacketCoFHBase getModePacket()
-    {
-        PacketCoFHBase payload = PacketTileInfo.newPacket(this);
-        payload.addByte(GarbageEnergyPacket.PacketID.MODE.ordinal());
-        return payload;
-    }
-
     protected void handleGuiPacket(PacketCoFHBase payload)
-    {
-    }
-
-    protected void handleFluidPacket(PacketCoFHBase payload)
     {
     }
 
@@ -119,19 +93,8 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
         markChunkDirty();
     }
 
-    public void sendFluidPacket()
-    {
-        PacketHandler.sendToDimension(getFluidPacket(), worldObj.provider.dimensionId);
-    }
-
-    public void sendModePacket()
-    {
-        if (ServerHelper.isClientWorld(worldObj)) {
-            PacketHandler.sendToServer(getModePacket());
-        }
-    }
-
-    /* ITilePacketHandler */
+    //
+    // ITilePacketHandler
     @Override
     public void handleTilePacket(PacketCoFHBase payload, boolean isServer)
     {
@@ -142,16 +105,14 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
         }
     }
 
-    /* ITileInfoPacketHandler */
+    //
+    // ITileInfoPacketHandler
     @Override
     public void handleTileInfoPacket(PacketCoFHBase payload, boolean isServer, EntityPlayer thePlayer)
     {
         switch (GarbageEnergyPacket.PacketID.values()[payload.getByte()]) {
             case GUI:
                 handleGuiPacket(payload);
-                return;
-            case FLUID:
-                handleFluidPacket(payload);
                 return;
             case MODE:
                 handleModePacket(payload);
@@ -160,7 +121,18 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
         }
     }
 
-    /* IPortableData */
+    //
+    // IPortableData
+    protected boolean readPortableTagInternal(EntityPlayer entityPlayer, NBTTagCompound tag)
+    {
+        return false;
+    }
+
+    protected boolean writePortableTagInternal(EntityPlayer entityPlayer, NBTTagCompound tag)
+    {
+        return false;
+    }
+
     @Override
     public String getDataType()
     {
@@ -170,9 +142,7 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
     @Override
     public void readPortableData(EntityPlayer player, NBTTagCompound tag)
     {
-        if (!canPlayerAccess(player)) {
-            return;
-        }
+        if (!canPlayerAccess(player)) return;
         if (readPortableTagInternal(player, tag)) {
             markDirty();
             sendUpdatePacket(Side.CLIENT);
@@ -182,11 +152,8 @@ public abstract class BaseTile extends TileCoFHBase implements ITileInfoPacketHa
     @Override
     public void writePortableData(EntityPlayer player, NBTTagCompound tag)
     {
-        if (!canPlayerAccess(player)) {
-            return;
-        }
         if (writePortableTagInternal(player, tag)) {
-
+            return;
         }
     }
 }

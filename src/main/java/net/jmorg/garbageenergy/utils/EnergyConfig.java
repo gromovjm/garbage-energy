@@ -2,12 +2,11 @@ package net.jmorg.garbageenergy.utils;
 
 public class EnergyConfig
 {
-
-    public int minPower = 8;
-    public int maxPower = 80;
-    public int maxEnergy = 40000;
-    public int minPowerLevel = maxEnergy / 10;
-    public int maxPowerLevel = 9 * maxEnergy / 10;
+    public int minPower = 1;
+    public int maxPower = 16;
+    public int maxEnergy = 1200;
+    public int minPowerLevel = maxEnergy / 1000;
+    public int maxPowerLevel = 10 * maxEnergy / 10;
     public int energyRamp = maxPowerLevel / maxPower;
 
     public EnergyConfig() { }
@@ -60,15 +59,13 @@ public class EnergyConfig
         return setParams(maxEnergy / 4800, maxEnergy / 1200, maxEnergy);
     }
 
-    public boolean setParamsDefault(int maxPower)
+    public void setParamsDefault(int maxPower)
     {
         this.maxPower = maxPower;
-        minPower = maxPower / 10;
-        maxEnergy = maxPower * 500;
-        minPowerLevel = maxEnergy / 10;
-        maxPowerLevel = 9 * maxEnergy / 10;
+        minPower = maxPower;
+        maxEnergy = maxPower * 1200;
+        minPowerLevel = maxEnergy / 1000;
+        maxPowerLevel = 10 * maxEnergy / 10;
         energyRamp = maxPowerLevel / maxPower;
-
-        return true;
     }
 }

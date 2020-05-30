@@ -1,7 +1,7 @@
 package net.jmorg.garbageenergy.common.gui.container;
 
 import cofh.lib.gui.container.ContainerBase;
-import net.jmorg.garbageenergy.common.bloks.BaseTile;
+import net.jmorg.garbageenergy.common.blocks.BaseTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;

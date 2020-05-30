@@ -1,4 +1,4 @@
-package net.jmorg.garbageenergy.common.bloks;
+package net.jmorg.garbageenergy.common.blocks;
 
 import cofh.api.tileentity.ISecurable;
 import cofh.core.CoFHProps;
@@ -30,41 +30,6 @@ public abstract class TileInventory extends BaseTile implements IInventory, ISec
     protected boolean inWorld = false;
 
     public ItemStack[] inventory = new ItemStack[0];
-
-    public void cofhValidate()
-    {
-        inWorld = true;
-    }
-
-    public void cofhInvalidate()
-    {
-        inWorld = false;
-    }
-
-    public boolean canAccess()
-    {
-        return canAccess;
-    }
-
-    public boolean isSecured()
-    {
-        return !SecurityHelper.isDefaultUUID(owner.getId());
-    }
-
-    public boolean enableSecurity()
-    {
-        return true;
-    }
-
-    public boolean extractItem(int slot, int amount, int side)
-    {
-        return false;
-    }
-
-    public boolean transferItem(int slot, int amount, int side)
-    {
-        return false;
-    }
 
     //
     // GUI methods.
@@ -107,6 +72,16 @@ public abstract class TileInventory extends BaseTile implements IInventory, ISec
 
     //
     // Inventory methods.
+    public boolean extractItem(int slot, int amount, int side)
+    {
+        return false;
+    }
+
+    public boolean transferItem(int slot, int amount, int side)
+    {
+        return false;
+    }
+
     @Override
     public int getSizeInventory()
     {
@@ -202,6 +177,21 @@ public abstract class TileInventory extends BaseTile implements IInventory, ISec
 
     //
     // Security methods.
+    public boolean canAccess()
+    {
+        return canAccess;
+    }
+
+    public boolean isSecured()
+    {
+        return !SecurityHelper.isDefaultUUID(owner.getId());
+    }
+
+    public boolean enableSecurity()
+    {
+        return true;
+    }
+
     @Override
     public boolean setAccess(AccessMode access)
     {

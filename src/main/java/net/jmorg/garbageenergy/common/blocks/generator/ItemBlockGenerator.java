@@ -1,4 +1,4 @@
-package net.jmorg.garbageenergy.common.bloks.generator;
+package net.jmorg.garbageenergy.common.blocks.generator;
 
 import cofh.api.tileentity.IRedstoneControl;
 import cofh.core.item.ItemBlockBase;

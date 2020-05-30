@@ -1,4 +1,4 @@
-package net.jmorg.garbageenergy.common.bloks;
+package net.jmorg.garbageenergy.common.blocks;
 
 import cofh.api.tileentity.IRedstoneControl;
 import cofh.asm.relauncher.CoFHSide;

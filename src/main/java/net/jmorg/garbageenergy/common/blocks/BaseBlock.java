@@ -1,4 +1,4 @@
-package net.jmorg.garbageenergy.common.bloks;
+package net.jmorg.garbageenergy.common.blocks;
 
 import cofh.api.tileentity.IRedstoneControl;
 import cofh.api.tileentity.ISecurable;
@@ -71,10 +71,11 @@ public abstract class BaseBlock extends BlockCoFHBase
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase living, ItemStack stack)
     {
-        TileEntity tile = getTile(world, x, y, z);
+        BaseTile tile = (BaseTile) getTile(world, x, y, z);
 
-        if (tile instanceof BaseTile) {
-            ((BaseTile) tile).setTileName(ItemHelper.getNameFromItemStack(stack));
+        if (tile != null) {
+            tile.setTileName(ItemHelper.getNameFromItemStack(stack));
+            tile.updateFromNBT(stack.getTagCompound());
         }
 
         super.onBlockPlacedBy(world, x, y, z, living, stack);

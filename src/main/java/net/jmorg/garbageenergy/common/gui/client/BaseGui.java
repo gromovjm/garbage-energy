@@ -8,7 +8,7 @@ import cofh.core.gui.element.TabSecurity;
 import cofh.core.gui.element.TabTutorial;
 import cofh.lib.gui.element.TabBase;
 import cofh.lib.util.helpers.SecurityHelper;
-import net.jmorg.garbageenergy.common.bloks.TileInventory;
+import net.jmorg.garbageenergy.common.blocks.TileInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;

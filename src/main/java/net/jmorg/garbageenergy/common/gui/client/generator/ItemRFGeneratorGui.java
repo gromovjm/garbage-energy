@@ -5,7 +5,7 @@ import cofh.lib.gui.element.ElementDualScaled;
 import cofh.lib.gui.element.ElementEnergyStored;
 import cofh.lib.util.helpers.StringHelper;
 import net.jmorg.garbageenergy.GarbageEnergy;
-import net.jmorg.garbageenergy.common.bloks.generator.TileItemRFGenerator;
+import net.jmorg.garbageenergy.common.blocks.generator.TileItemRFGenerator;
 import net.jmorg.garbageenergy.common.gui.client.BaseGui;
 import net.jmorg.garbageenergy.common.gui.container.generator.ItemRFGeneratorContainer;
 import net.minecraft.entity.player.InventoryPlayer;
