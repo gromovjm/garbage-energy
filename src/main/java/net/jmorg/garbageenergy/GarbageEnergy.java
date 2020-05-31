@@ -5,6 +5,7 @@ import cofh.core.network.PacketCoFHBase;
 import cofh.core.util.ConfigHandler;
 import cofh.core.util.FMLEventHandler;
 import cofh.mod.BaseMod;
+import cofh.mod.updater.UpdateManager;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
@@ -32,8 +33,9 @@ public class GarbageEnergy extends BaseMod
     public static final String MODID = "GarbageEnergy";
     public static final String MODNAME = "Garbage Energy";
     public static final String MODGUIFACTORY = "net.jmorg.garbageenergy.common.gui.GuiFactory";
-    public static final String VERSION = "0.1.0";
+    public static final String VERSION = "1.7.10R1.0.0B7";
     public static final String DEPENDENCIES = "required-after:CoFHCore@[1.7.10R3.1.4,1.7.10R3.2.0);";
+    public static final String RELEASEURL = "https://raw.github.com/jm-organization/" + MODID + "/master/version.json";
     @Mod.Instance(MODID)
     public static GarbageEnergy instance;
     @SidedProxy(clientSide = "net.jmorg.garbageenergy.proxy.ClientProxy", serverSide = "net.jmorg.garbageenergy.proxy.ServerProxy")
@@ -60,6 +62,7 @@ public class GarbageEnergy extends BaseMod
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        UpdateManager.registerUpdater(new UpdateManager(this, RELEASEURL, CoFHProps.DOWNLOAD_URL));
         config.setConfiguration(new Configuration(new File(CoFHProps.configDir, "cofh/garbageenergy/common.cfg"), true));
         configClient.setConfiguration(new Configuration(new File(CoFHProps.configDir, "cofh/garbageenergy/client.cfg"), true));
 
