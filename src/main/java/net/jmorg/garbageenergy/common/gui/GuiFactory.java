@@ -1,6 +1,7 @@
 package net.jmorg.garbageenergy.common.gui;
 
 import cpw.mods.fml.client.IModGuiFactory;
+import net.jmorg.garbageenergy.common.GarbageEnergyGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 

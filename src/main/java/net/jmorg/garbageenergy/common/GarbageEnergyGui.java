@@ -1,4 +1,4 @@
-package net.jmorg.garbageenergy.common.gui;
+package net.jmorg.garbageenergy.common;
 
 import cpw.mods.fml.client.config.DummyConfigElement.DummyCategoryElement;
 import cpw.mods.fml.client.config.GuiConfig;
