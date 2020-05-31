@@ -5,6 +5,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cofh.api.energy.IEnergyStorage;
 import cofh.api.tileentity.IEnergyInfo;
+import cofh.api.tileentity.ISidedTexture;
 import cofh.core.CoFHProps;
 import cofh.core.network.PacketCoFHBase;
 import cofh.lib.util.TimeTracker;
@@ -21,10 +22,11 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TileGeneratorBase extends TileRSControl implements IEnergyInfo, IEnergyProvider, ISidedInventory
+public abstract class TileGeneratorBase extends TileRSControl implements IEnergyInfo, IEnergyProvider, ISidedInventory, ISidedTexture
 {
     protected final byte type;
 
@@ -345,6 +347,30 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     {
         RedstoneControlHelper.setItemStackTagRS(tag, this);
         return true;
+    }
+
+    //
+    // ISidedTexture
+    @Override
+    public IIcon getTexture(int side, int pass)
+    {
+        if (pass == 0) {
+            if (side == 0) {
+                return BlockGenerator.generatorBottomSide;
+            } else if (side == 1) {
+                return BlockGenerator.generatorTopSide;
+            }
+            if (side == facing) {
+                return BlockGenerator.generatorOppositeSide;
+            }
+            if (side == ForgeDirection.OPPOSITES[facing]) {
+                return isActive ? BlockGenerator.faceActive[type] : BlockGenerator.face[type];
+            }
+            return BlockGenerator.generatorSide;
+        }/* else if (side < 6) {
+            return IconRegistry.getIcon(TEProps.textureSelection, sideConfig.sideTex[sideCache[side]]);
+        }*/
+        return BlockGenerator.generatorSide;
     }
 
     //

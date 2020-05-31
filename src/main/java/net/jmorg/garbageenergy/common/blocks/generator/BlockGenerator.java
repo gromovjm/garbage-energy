@@ -1,5 +1,6 @@
 package net.jmorg.garbageenergy.common.blocks.generator;
 
+import cofh.api.tileentity.ISidedTexture;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,6 +23,7 @@ import java.util.List;
 public class BlockGenerator extends BaseBlock
 {
     public static IIcon[] face = new IIcon[Types.values().length];
+    public static IIcon[] faceActive = new IIcon[Types.values().length];
     public static IIcon generatorBottomSide;
     public static IIcon generatorTopSide;
     public static IIcon generatorSide;
@@ -54,6 +56,13 @@ public class BlockGenerator extends BaseBlock
     }
 
     @Override
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    {
+        ISidedTexture tile = (ISidedTexture) world.getTileEntity(x, y, z);
+        return tile == null ? null : tile.getTexture(side, renderPass);
+    }
+
+    @Override
     public IIcon getIcon(int side, int metadata)
     {
         if (side == 0) {
@@ -81,7 +90,7 @@ public class BlockGenerator extends BaseBlock
         // Face Textures
         for (int i = 0; i < Types.values().length; i++) {
             face[i] = ir.registerIcon(GarbageEnergy.MODID + ":generator/face_" + NAMES[i]);
-            face[i] = ir.registerIcon(GarbageEnergy.MODID + ":generator/active_face_" + NAMES[i]);
+            faceActive[i] = ir.registerIcon(GarbageEnergy.MODID + ":generator/active_face_" + NAMES[i]);
         }
     }
 
@@ -136,7 +145,7 @@ public class BlockGenerator extends BaseBlock
     public boolean canRenderInPass(int pass)
     {
         renderPass = pass;
-        return pass < 2;
+        return pass < 1;
     }
 
     @Override
