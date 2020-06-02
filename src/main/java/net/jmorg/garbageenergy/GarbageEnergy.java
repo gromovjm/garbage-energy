@@ -33,7 +33,7 @@ public class GarbageEnergy extends BaseMod
     public static final String MODID = "GarbageEnergy";
     public static final String MODNAME = "Garbage Energy";
     public static final String MODGUIFACTORY = "net.jmorg.garbageenergy.common.gui.GuiFactory";
-    public static final String VERSION = "1.7.10R1.0.0B7";
+    public static final String VERSION = "1.7.10R1.0.1B8";
     public static final String DEPENDENCIES = "required-after:CoFHCore@[1.7.10R3.1.4,1.7.10R3.2.0);";
     public static final String RELEASEURL = "https://raw.github.com/jm-organization/" + MODID + "/master/version.json";
     @Mod.Instance(MODID)
