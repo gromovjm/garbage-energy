@@ -37,7 +37,11 @@ public abstract class BaseGui extends GuiBaseAdv
     public void initGui()
     {
         super.initGui();
+        initCommonTabs();
+    }
 
+    protected void initCommonTabs()
+    {
         if (tile.enableSecurity() && tile.isSecured()) {
             addTab(new TabSecurity(this, tile, playerUuid));
         }

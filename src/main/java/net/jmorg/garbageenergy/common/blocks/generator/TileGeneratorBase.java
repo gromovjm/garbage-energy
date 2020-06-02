@@ -79,7 +79,7 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
             int maxPower = MathHelper.clamp(GarbageEnergy.config.get(generatorName, "BasePower", 8), 1, 16);
             GarbageEnergy.config.set(generatorName, "BasePower", maxPower);
             defaultEnergyConfig[i] = new EnergyConfig();
-            defaultEnergyConfig[i].setParamsDefault(maxPower);
+            defaultEnergyConfig[i].setParamsPower(maxPower);
 
             comment = "Reduces process time.";
             attenuateModifier[i] = (float) GarbageEnergy.config.get(generatorName, "AttenuateModifier", 0.005F, comment);
@@ -293,7 +293,7 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
 
     protected int getEnergyOfItem()
     {
-        return isActive ? MathHelper.clamp(calcEnergy() * energyModifier, 1, config.maxPower) : 0;
+        return isActive ? MathHelper.clamp(calcEnergy() * energyModifier, config.minPower, config.maxPower) : 0;
     }
 
     //

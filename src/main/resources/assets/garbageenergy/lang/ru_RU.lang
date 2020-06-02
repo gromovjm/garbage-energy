@@ -7,10 +7,14 @@ tile.GarbageEnergy.generator.receiver.name=Приёмщик
 tile.GarbageEnergy.generator.transmitter.name=Передатчик энергии
 
 # CoFHCore GUI tabs
-tab.info.GarbageEnergy.generator.0=Используйте этот генератор чтобы производить RF энергию из ресурсов, которые Вам не нужны.
-tab.info.GarbageEnergy.generator.itemRf.0=Этот генератор производит RF из ненужных Вам предметов.
-tab.info.GarbageEnergy.generator.itemRf.1=Предметы, которые Вы можете сюда положить подписаны.
-tab.info.GarbageEnergy.generator.itemRf.2=Не ложите сюда Ваши алмазы!
+info.tab.GarbageEnergy.generator.0=Используйте этот генератор чтобы производить RF энергию из ресурсов, которые Вам не нужны.
+info.tab.GarbageEnergy.generator.itemRf.0=Этот генератор производит RF из ненужных Вам предметов.
+info.tab.GarbageEnergy.generator.itemRf.1=Предметы, которые Вы можете сюда положить подписаны.
+info.tab.GarbageEnergy.generator.itemRf.2=Не ложите сюда Ваши алмазы!
+info.GarbageEnergy.generator.rfFromItem=RF с предмета
+
+# Tooltips
+tooltip.itemRgGenerationFromItem=Модификатор производства энергии
 
 # creativetabs
 itemGroup.garbageEnergy=Мусорная энергия

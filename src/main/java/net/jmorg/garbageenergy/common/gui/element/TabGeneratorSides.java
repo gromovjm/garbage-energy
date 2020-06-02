@@ -12,11 +12,11 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class TabGenerator extends TabBase
+public class TabGeneratorSides extends TabBase
 {
     TileGeneratorBase tile;
 
-    public TabGenerator(GuiBase gui, TileGeneratorBase tile)
+    public TabGeneratorSides(GuiBase gui, TileGeneratorBase tile)
     {
         super(gui, TabConfiguration.defaultSide);
 
