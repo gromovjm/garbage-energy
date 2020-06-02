@@ -5,7 +5,6 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cofh.api.energy.IEnergyStorage;
 import cofh.api.tileentity.IEnergyInfo;
-import cofh.api.tileentity.ISidedTexture;
 import cofh.core.CoFHProps;
 import cofh.core.network.PacketCoFHBase;
 import cofh.lib.util.TimeTracker;
@@ -13,7 +12,7 @@ import cofh.lib.util.helpers.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.jmorg.garbageenergy.GarbageEnergy;
-import net.jmorg.garbageenergy.common.blocks.TileRSControl;
+import net.jmorg.garbageenergy.common.blocks.TileReconfigurable;
 import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator.Types;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
@@ -21,15 +20,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TileGeneratorBase extends TileRSControl implements IEnergyInfo, IEnergyProvider, ISidedInventory, ISidedTexture
+public abstract class TileGeneratorBase extends TileReconfigurable implements IEnergyInfo, IEnergyProvider, ISidedInventory
 {
     protected final byte type;
 
+    /*protected static final SideConfig[] defaultSideConfig = new SideConfig[BlockGenerator.Types.values().length];
+    protected SideConfig sideConfig;*/
     public static boolean enableSecurity = true;
 
     protected TimeTracker tracker = new TimeTracker();
@@ -37,19 +37,14 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     protected static final EnergyConfig[] defaultEnergyConfig = new EnergyConfig[BlockGenerator.Types.values().length];
     protected EnergyConfig config;
     IEnergyReceiver energyReceiver = null;
-    float attenuateModifier = 0.005F;
-    int energyModifier = (int) (attenuateModifier * 200);
+    static float[] attenuateModifier = new float[BlockGenerator.Types.values().length];
+    static int[] energyAmplifier = new int[BlockGenerator.Types.values().length];
+    protected int energyModifier;
     float progress = 0F;
     float fuelValue;
 
     boolean cached = false;
     boolean wasActive = false;
-    byte facing = (byte) ForgeDirection.NORTH.ordinal();
-
-    public TileGeneratorBase()
-    {
-        this(Types.ITEM_RF);
-    }
 
     public TileGeneratorBase(Types type)
     {
@@ -57,6 +52,10 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
 
         config = defaultEnergyConfig[getType()];
         energyStorage = new EnergyStorage(config.maxEnergy, config.maxPower * 2);
+        energyModifier = (int) (attenuateModifier[getType()] * energyAmplifier[getType()] * 200);
+        facing = (byte) ForgeDirection.NORTH.ordinal();
+        /*sideConfig = defaultSideConfig[getType()];
+        setDefaultSides();*/
     }
 
     public static void configure()
@@ -66,18 +65,26 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
         enableSecurity = GarbageEnergy.config.get("Security", "Generator.All.Securable", enableSecurity, comment);
 
         // Configure fuels map.
-        comment = "You can specify fuels for the Item Generators in this section. Instead of common divider\nbetween modname and item use dot.";
+        comment = "Indicate the objects that can be placed in the generator for their conversion into RF energy as\n" +
+                "the parameter name. Its value indicate the value of the coefficient of energy generation when burning\n" +
+                "this item. At the same time, this parameter is equal to the length of the burning process,\n" +
+                "which will decrease by the value of AttenuateModifier.";
         ConfigCategory configs = GarbageEnergy.config.getCategory("ItemRfFuels");
         ItemFuelManager.registerFuels(GarbageEnergy.config.getCategoryKeys("ItemRfFuels"), configs);
         configs.setComment(comment);
 
         // Configure generator energy.
         for (int i = 0; i < BlockGenerator.Types.values().length; i++) {
-            String name = StringHelper.titleCase(BlockGenerator.NAMES[i]);
-            int maxPower = MathHelper.clamp(GarbageEnergy.config.get("Generator." + name, "BasePower", 8), 1, 16);
-            GarbageEnergy.config.set("Generator." + name, "BasePower", maxPower);
+            String generatorName = "Generator." + StringHelper.titleCase(BlockGenerator.NAMES[i]);
+            int maxPower = MathHelper.clamp(GarbageEnergy.config.get(generatorName, "BasePower", 8), 1, 16);
+            GarbageEnergy.config.set(generatorName, "BasePower", maxPower);
             defaultEnergyConfig[i] = new EnergyConfig();
             defaultEnergyConfig[i].setParamsDefault(maxPower);
+
+            comment = "Reduces process time.";
+            attenuateModifier[i] = (float) GarbageEnergy.config.get(generatorName, "AttenuateModifier", 0.005F, comment);
+            comment = "Increases output energy.";
+            energyAmplifier[i] = GarbageEnergy.config.get(generatorName, "EnergyAmplifier", 1, comment);
         }
 
     }
@@ -92,6 +99,12 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     public int getType()
     {
         return type;
+    }
+
+    @Override
+    public int getLightValue()
+    {
+        return isActive ? 5 : 0;
     }
 
     public static float getEnergyValue(ItemStack stack)
@@ -129,16 +142,6 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
         return energyStorage;
     }
 
-    protected boolean hasStoredEnergy()
-    {
-        return energyStorage.getEnergyStored() > 0;
-    }
-
-    public int getScaledEnergyStored(int scale)
-    {
-        return energyStorage.getEnergyStored() * scale / energyStorage.getMaxEnergyStored();
-    }
-
     public final void setEnergyStored(int quantity)
     {
         energyStorage.setEnergyStored(quantity);
@@ -150,11 +153,11 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
 
     protected abstract void generate();
 
-    protected void transferEnergy(int from)
+    protected void transferEnergy()
     {
         if (energyReceiver == null) return;
 
-        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[from ^ 1];
+        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[facing];
         int energy = energyReceiver.receiveEnergy(direction, Math.min(energyStorage.getMaxExtract(), getEnergyStored(direction)), false);
 
         energyStorage.modifyEnergyStored(-energy);
@@ -163,7 +166,7 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     protected void attenuate()
     {
         if (timeCheck() && progress > 0) {
-            progress -= attenuateModifier;
+            progress -= attenuateModifier[getType()];
 
             if (progress < 0) {
                 progress = 0;
@@ -176,17 +179,6 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     {
         cached = false;
         super.invalidate();
-    }
-
-    @Override
-    public boolean onWrench(EntityPlayer player, int hitSide)
-    {
-        rotateBlock();
-        return true;
-    }
-
-    public void rotateBlock()
-    {
     }
 
     @Override
@@ -219,7 +211,7 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
             // else disable generation and mark that it was active.
             if (redstoneControlOrDisable() && canGenerate()) {
                 generate();
-                transferEnergy(facing);
+                transferEnergy();
             } else {
                 isActive = false;
                 wasActive = true;
@@ -229,17 +221,29 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
             // If it redstone mode disabled and can generate energy we activate it and generate energy.
             isActive = true;
             generate();
-            transferEnergy(facing);
+            transferEnergy();
         }
 
         // Send update packets if it is enabled.
         if (curActive != isActive && !wasActive) {
             updateLighting();
             sendUpdatePacket(Side.CLIENT);
-        } else if (wasActive && tracker.hasDelayPassed(worldObj, 100)) {
+        } else if (wasActive && tracker.hasDelayPassed(worldObj, 10)) {
             wasActive = false;
             updateLighting();
             sendUpdatePacket(Side.CLIENT);
+        }
+    }
+
+    @Override
+    public void blockPlaced()
+    {
+        for (int i = facing + 1, e = facing + 6; i < e; i++) {
+            if (EnergyHelper.isAdjacentEnergyReceiverFromSide(this, i % 6)) {
+                updateEnergyReceiver();
+                markDirty();
+                sendUpdatePacket(Side.CLIENT);
+            }
         }
     }
 
@@ -248,10 +252,8 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
         if (ServerHelper.isClientWorld(worldObj)) {
             return;
         }
-        TileEntity tile = BlockHelper.getAdjacentTileEntity(this, facing);
-
-        if (EnergyHelper.isEnergyReceiverFromSide(tile, ForgeDirection.VALID_DIRECTIONS[facing ^ 1])) {
-            energyReceiver = (IEnergyReceiver) tile;
+        if (EnergyHelper.isAdjacentEnergyReceiverFromSide(this, ForgeDirection.OPPOSITES[facing])) {
+            energyReceiver = (IEnergyReceiver) BlockHelper.getAdjacentTileEntity(this, ForgeDirection.OPPOSITES[facing]);
         } else {
             energyReceiver = null;
         }
@@ -263,8 +265,8 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
     {
-        if (from.ordinal() == facing) {
-            return energyStorage.extractEnergy(Math.min(config.maxPower * 2, maxExtract), simulate);
+        if (canConnectEnergy(from)) {
+            return energyStorage.extractEnergy(Math.min(config.maxPower * energyModifier, maxExtract), simulate);
         }
         return 0;
     }
@@ -286,7 +288,12 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     @Override
     public boolean canConnectEnergy(ForgeDirection from)
     {
-        return from.ordinal() == facing;
+        return from.ordinal() == ForgeDirection.OPPOSITES[facing];
+    }
+
+    protected int getEnergyOfItem()
+    {
+        return isActive ? MathHelper.clamp(calcEnergy() * energyModifier, 1, config.maxPower) : 0;
     }
 
     //
@@ -294,13 +301,13 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     @Override
     public int getInfoEnergyPerTick()
     {
-        return calcEnergy() * energyModifier;
+        return getEnergyOfItem();
     }
 
     @Override
     public int getInfoMaxEnergyPerTick()
     {
-        return config.maxPower * energyModifier;
+        return config.maxPower;
     }
 
     @Override
@@ -327,6 +334,13 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
     public boolean canInsertItem(int slot, ItemStack stack, int side)
     {
         return side != facing && isItemValidForSlot(slot, stack);
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    {
+        if (slot > inventory.length) return false;
+        return getEnergyValue(stack) > 0;
     }
 
     @Override
@@ -360,16 +374,14 @@ public abstract class TileGeneratorBase extends TileRSControl implements IEnergy
             } else if (side == 1) {
                 return BlockGenerator.generatorTopSide;
             }
-            if (side == facing) {
-                return BlockGenerator.generatorOppositeSide;
-            }
             if (side == ForgeDirection.OPPOSITES[facing]) {
+                return isActive ? BlockGenerator.generatorActiveOppositeSide : BlockGenerator.generatorOppositeSide;
+            }
+            if (side == facing) {
                 return isActive ? BlockGenerator.faceActive[type] : BlockGenerator.face[type];
             }
             return BlockGenerator.generatorSide;
-        }/* else if (side < 6) {
-            return IconRegistry.getIcon(TEProps.textureSelection, sideConfig.sideTex[sideCache[side]]);
-        }*/
+        }
         return BlockGenerator.generatorSide;
     }
 

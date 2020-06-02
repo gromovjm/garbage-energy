@@ -41,6 +41,8 @@ public class ItemRFGeneratorGui extends BaseGui
     {
         super.initGui();
 
+        //addTab(new TabGenerator(this, tile));
+
         addElement(new ElementEnergyStored(this, 80, 18, tile.getEnergyStorage()));
         if (tile.getMaxEnergyStored(ForgeDirection.UNKNOWN) > 0) {
             addTab(new TabEnergy(this, tile, true));

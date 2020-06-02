@@ -203,7 +203,6 @@ public abstract class TileInventory extends BaseTile implements IInventory, ISec
     @Override
     public AccessMode getAccess()
     {
-
         return access;
     }
 

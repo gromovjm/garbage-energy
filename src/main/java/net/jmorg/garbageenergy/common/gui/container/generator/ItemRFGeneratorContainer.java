@@ -22,6 +22,6 @@ public class ItemRFGeneratorContainer extends BaseContainer implements ISlotVali
     @Override
     public boolean isItemValid(ItemStack itemStack)
     {
-        return TileItemRFGenerator.getEnergyValue(itemStack) > 0;
+        return itemRFGeneratorTile.isItemValidForSlot(0, itemStack);
     }
 }

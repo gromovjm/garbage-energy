@@ -28,6 +28,7 @@ public class BlockGenerator extends BaseBlock
     public static IIcon generatorTopSide;
     public static IIcon generatorSide;
     public static IIcon generatorOppositeSide;
+    public static IIcon generatorActiveOppositeSide;
 
     public static ItemStack itemRF;
     public static ItemStack receiver;
@@ -86,6 +87,7 @@ public class BlockGenerator extends BaseBlock
         generatorTopSide = ir.registerIcon(GarbageEnergy.MODID + ":generator/top_side");
         generatorSide = ir.registerIcon(GarbageEnergy.MODID + ":generator/side");
         generatorOppositeSide = ir.registerIcon(GarbageEnergy.MODID + ":generator/opposite_side");
+        generatorActiveOppositeSide = ir.registerIcon(GarbageEnergy.MODID + ":generator/active_opposite_side");
 
         // Face Textures
         for (int i = 0; i < Types.values().length; i++) {

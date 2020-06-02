@@ -11,14 +11,29 @@ import net.minecraft.item.ItemStack;
 
 public class TileItemRFGenerator extends TileGeneratorBase
 {
+    private static final int NUM_CONFIG = 3;
+    private static final int[] SLOTS = new int[] {0};
+
     public TileItemRFGenerator()
     {
-        inventory = new ItemStack[1];
-        attenuateModifier = 0.05F;
+        super(BlockGenerator.Types.ITEM_RF);
+        inventory = new ItemStack[SLOTS.length];
     }
 
     public static void initialize()
     {
+        /*int type = BlockGenerator.Types.ITEM_RF.ordinal();
+
+        defaultSideConfig[type] = new SideConfig();
+        defaultSideConfig[type].numConfig = NUM_CONFIG;
+        defaultSideConfig[type].slotGroups = new int[][] { {}, { 0 }, { 1 } };
+        defaultSideConfig[type].allowInsertionSide = new boolean[] { false, true, false };
+        defaultSideConfig[type].allowExtractionSide = new boolean[] { false, false, false };
+        defaultSideConfig[type].allowInsertionSlot = new boolean[] { true, false };
+        defaultSideConfig[type].allowExtractionSlot = new boolean[] { false, false };
+        defaultSideConfig[type].sideTex = new int[] { 0, 1, 4, 7 };
+        defaultSideConfig[type].defaultSides = new byte[] { 1, 1, 2, 2, 2, 2 };*/
+
         GameRegistry.registerTileEntity(TileItemRFGenerator.class, GarbageEnergy.MODID + ".Generator.ItemRFGenerator");
     }
 
@@ -38,10 +53,9 @@ public class TileItemRFGenerator extends TileGeneratorBase
     protected void generate()
     {
         if (progress <= 0 && inventory[0] != null) {
-            progress = fuelValue = getEnergyValue(inventory[0]);
-
-            energyStorage.modifyEnergyStored(MathHelper.clamp(calcEnergy() * energyModifier, 1, config.maxPower));
+            energyStorage.modifyEnergyStored(getEnergyOfItem());
             inventory[0] = ItemHelper.consumeItem(inventory[0]);
+            progress = fuelValue = getEnergyValue(inventory[0]);
         } else {
             attenuate();
         }
@@ -73,5 +87,21 @@ public class TileItemRFGenerator extends TileGeneratorBase
     public Object getGuiServer(InventoryPlayer inventory)
     {
         return new ItemRFGeneratorContainer(inventory, this);
+    }
+
+    //
+    // IInventory
+    @Override
+    public int[] getAccessibleSlotsFromSide(int side)
+    {
+        return SLOTS;
+    }
+
+    //
+    // ISidedInventory
+    @Override
+    public int getNumConfig(int side)
+    {
+        return NUM_CONFIG;
     }
 }
