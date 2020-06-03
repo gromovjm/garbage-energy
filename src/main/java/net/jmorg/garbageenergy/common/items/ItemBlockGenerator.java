@@ -1,14 +1,13 @@
-package net.jmorg.garbageenergy.common.blocks.generator;
+package net.jmorg.garbageenergy.common.items;
 
 import cofh.api.tileentity.IRedstoneControl;
 import cofh.core.item.ItemBlockBase;
-import cofh.lib.util.helpers.ItemHelper;
-import cofh.lib.util.helpers.RedstoneControlHelper;
-import cofh.lib.util.helpers.SecurityHelper;
-import cofh.lib.util.helpers.StringHelper;
+import cofh.lib.util.helpers.*;
+import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
@@ -17,11 +16,18 @@ public class ItemBlockGenerator extends ItemBlockBase
     public ItemBlockGenerator(Block block)
     {
         super(block);
+        setHasSubtypes(true);
+        setMaxDamage(0);
+        setNoRepair();
     }
 
     public static ItemStack setDefaultTag(ItemStack container)
     {
         RedstoneControlHelper.setControl(container, IRedstoneControl.ControlMode.DISABLED);
+        EnergyHelper.setDefaultEnergyTag(container, 0);
+
+        container.stackTagCompound.setByte("Facing", (byte) ForgeDirection.NORTH.ordinal());
+
         return container;
     }
 

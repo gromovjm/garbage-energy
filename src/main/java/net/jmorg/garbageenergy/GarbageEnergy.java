@@ -55,7 +55,7 @@ public class GarbageEnergy extends BaseMod
         @Override
         public Item getTabIconItem()
         {
-            return Item.getItemById(331);
+            return BlockGenerator.itemRf.getItem();
         }
     };
 
@@ -94,6 +94,8 @@ public class GarbageEnergy extends BaseMod
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+        GarbageEnergyBlock.postInit();
+
         proxy.registerRenderInformation();
     }
 

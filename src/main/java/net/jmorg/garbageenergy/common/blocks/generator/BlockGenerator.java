@@ -6,10 +6,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.blocks.BaseBlock;
+import net.jmorg.garbageenergy.common.items.ItemBlockGenerator;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -18,10 +19,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.List;
-
 public class BlockGenerator extends BaseBlock
 {
+    public static final String NAME = GarbageEnergy.MODID + ".Generator";
+
     public static IIcon[] face = new IIcon[Types.values().length];
     public static IIcon[] faceActive = new IIcon[Types.values().length];
     public static IIcon generatorBottomSide;
@@ -30,7 +31,7 @@ public class BlockGenerator extends BaseBlock
     public static IIcon generatorOppositeSide;
     public static IIcon generatorActiveOppositeSide;
 
-    public static ItemStack itemRF;
+    public static ItemStack itemRf;
     public static ItemStack receiver;
     public static ItemStack transmitter;
 
@@ -40,6 +41,7 @@ public class BlockGenerator extends BaseBlock
         setCreativeTab(GarbageEnergy.garbageEnergyTab);
         setHardness(15.0F);
         setResistance(25.0F);
+        setBlockName(NAME);
 
         basicGui = true;
     }
@@ -50,10 +52,16 @@ public class BlockGenerator extends BaseBlock
         TileGeneratorBase.configure();
         TileItemRFGenerator.initialize();
 
-        itemRF = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, Types.ITEM_RF.ordinal()));
-        GameRegistry.registerCustomItemStack("item_rf", itemRF);
+        itemRf = registerItemStack(NAME + ".ItemRf", Types.ITEM_RF);
 
         return false;
+    }
+
+    private ItemStack registerItemStack(String name, Types type)
+    {
+        ItemStack itemStack = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, type.ordinal()));
+        GameRegistry.registerCustomItemStack(name, itemStack);
+        return itemStack;
     }
 
     @Override
@@ -99,12 +107,14 @@ public class BlockGenerator extends BaseBlock
     @Override
     public boolean postInit()
     {
-        return false;
+        GameRegistry.addRecipe(itemRf, "I#I", "I I", "ROR", 'O', Blocks.obsidian, 'R', Items.redstone, 'I', Items.iron_ingot, '#', Blocks.iron_bars);
+
+        return true;
     }
 
     public static void refreshItemStacks()
     {
-        itemRF = ItemBlockGenerator.setDefaultTag(itemRF);
+        ItemBlockGenerator.setDefaultTag(itemRf);
     }
 
     public static String getTileName(String tileName)
@@ -112,13 +122,13 @@ public class BlockGenerator extends BaseBlock
         return BaseBlock.getTileName("generator." + tileName);
     }
 
-    @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List list)
-    {
-        for (int i = 0; i < Types.values().length; i++) {
-            list.add(ItemBlockGenerator.setDefaultTag(new ItemStack(item, 1, i)));
-        }
-    }
+//    @Override
+//    public void getSubBlocks(Item item, CreativeTabs tab, List list)
+//    {
+//        for (int i = 0; i < Types.values().length; i++) {
+//            list.add(ItemBlockGenerator.setDefaultTag(new ItemStack(item, 1, i)));
+//        }
+//    }
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata)
@@ -187,6 +197,6 @@ public class BlockGenerator extends BaseBlock
     {
         ITEM_RF,
         RECEIVER,
-        TRANSMITTER;
+        TRANSMITTER
     }
 }
