@@ -1,0 +1,13 @@
+Stable 1.7.10R1.1.0 Beta 1 release
+    <Added>:
+     * Recipe for Item RF generator.
+     * Changelog. :P
+
+    <Fixed>:
+     * NulPointerException while updating tile data from NBT.
+     * Defects in PacketHandler.
+--------------------
+
+1.7.10R1.0.1 Beta 8 release
+     * Implemented Minecraft Forge modification.
+--------------------
