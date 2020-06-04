@@ -1,15 +1,14 @@
 package net.jmorg.garbageenergy.network;
 
 import cofh.api.tileentity.IRedstoneControl;
-import cofh.api.tileentity.IRedstoneControl.ControlMode;
 import cofh.api.tileentity.ISecurable;
 import cofh.api.tileentity.ISecurable.AccessMode;
 import cofh.core.network.PacketCoFHBase;
 import cofh.core.network.PacketHandler;
 import cofh.lib.gui.container.IAugmentableContainer;
-
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class GarbageEnergyPacket extends PacketCoFHBase
@@ -24,7 +23,8 @@ public class GarbageEnergyPacket extends PacketCoFHBase
         RS_POWER_UPDATE, RS_CONFIG_UPDATE, SECURITY_UPDATE, TAB_AUGMENT, CONFIG_SYNC
     }
 
-    public enum PacketID {
+    public enum PacketID
+    {
         GUI, FLUID, MODE
     }
 
@@ -36,24 +36,16 @@ public class GarbageEnergyPacket extends PacketCoFHBase
 
             switch (PacketTypes.values()[type]) {
                 case RS_POWER_UPDATE:
-                    int[] coords = getCoords();
-                    IRedstoneControl rs = (IRedstoneControl) player.worldObj.getTileEntity(coords[0], coords[1], coords[2]);
-                    rs.setPowered(getBool());
+                    handleRsPowerUpdate(player);
                     return;
                 case RS_CONFIG_UPDATE:
-                    coords = getCoords();
-                    rs = (IRedstoneControl) player.worldObj.getTileEntity(coords[0], coords[1], coords[2]);
-                    rs.setControl(ControlMode.values()[getByte()]);
+                    handleRsConfigUpdate(player);
                     return;
                 case SECURITY_UPDATE:
-                    if (player.openContainer instanceof ISecurable) {
-                        ((ISecurable) player.openContainer).setAccess(AccessMode.values()[getByte()]);
-                    }
+                    handleSecurityUpdate(player);
                     return;
                 case TAB_AUGMENT:
-                    if (player.openContainer instanceof IAugmentableContainer) {
-                        ((IAugmentableContainer) player.openContainer).setAugmentLock(getBool());
-                    }
+                    handleTabAugment(player);
                     return;
                 case CONFIG_SYNC:
                     GarbageEnergy.instance.handleConfigSync(this);
@@ -92,8 +84,58 @@ public class GarbageEnergyPacket extends PacketCoFHBase
         PacketHandler.sendTo(GarbageEnergy.instance.getConfigSync(), player);
     }
 
-    public static PacketCoFHBase getPacket(PacketTypes theType)
+    public static PacketCoFHBase getPacket(PacketTypes packetType)
     {
-        return new GarbageEnergyPacket().addByte(theType.ordinal());
+        return new GarbageEnergyPacket().addByte(packetType.ordinal());
+    }
+
+    protected void handleRsPowerUpdate(EntityPlayer player)
+    {
+        int[] coords = getCoords();
+
+        if (!player.worldObj.blockExists(coords[0], coords[1], coords[2])) return;
+        if (player.getDistanceSq(coords[0], coords[1], coords[2]) > 64.0D) return;
+
+        TileEntity rs = player.worldObj.getTileEntity(coords[0], coords[1], coords[2]);
+        if (rs instanceof IRedstoneControl) {
+            ((IRedstoneControl) rs).setPowered(getBool());
+        }
+    }
+
+    protected void handleRsConfigUpdate(EntityPlayer player)
+    {
+        int[] coords = getCoords();
+
+        if (!player.worldObj.blockExists(coords[0], coords[1], coords[2])) return;
+        if (player.getDistanceSq(coords[0], coords[1], coords[2]) > 64.0D) return;
+
+        TileEntity rs = player.worldObj.getTileEntity(coords[0], coords[1], coords[2]);
+        if (rs instanceof IRedstoneControl) {
+            ((IRedstoneControl) rs).setControl(IRedstoneControl.ControlMode.values()[getByte()]);
+        }
+    }
+
+    protected void handleSecurityUpdate(EntityPlayer player)
+    {
+        int[] coords = getCoords();
+
+        if (!player.worldObj.blockExists(coords[0], coords[1], coords[2])) return;
+        if (player.getDistanceSq(coords[0], coords[1], coords[2]) > 64.0D) return;
+
+        if (player.openContainer instanceof ISecurable) {
+            ((ISecurable) player.openContainer).setAccess(AccessMode.values()[getByte()]);
+        }
+    }
+
+    protected void handleTabAugment(EntityPlayer player)
+    {
+        int[] coords = getCoords();
+
+        if (!player.worldObj.blockExists(coords[0], coords[1], coords[2])) return;
+        if (player.getDistanceSq(coords[0], coords[1], coords[2]) > 64.0D) return;
+
+        if (player.openContainer instanceof IAugmentableContainer) {
+            ((IAugmentableContainer) player.openContainer).setAugmentLock(getBool());
+        }
     }
 }

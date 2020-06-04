@@ -390,7 +390,10 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     public void updateFromNBT(NBTTagCompound nbt)
     {
         super.updateFromNBT(nbt);
-        setEnergyStored(nbt.getInteger("Energy"));
+
+        if (nbt != null) {
+            setEnergyStored(nbt.getInteger("Energy"));
+        }
     }
 
     @Override
