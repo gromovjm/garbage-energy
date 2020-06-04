@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10R1.0.1B8"
+version = "1.7.10R1.1.0B1"
 group= "net.jmorg" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "GarbageEnergy"
 
@@ -39,8 +39,6 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-//    compile "cofh:CoFHCore:[1.7.10]3.1.4:329"
 
 }
 

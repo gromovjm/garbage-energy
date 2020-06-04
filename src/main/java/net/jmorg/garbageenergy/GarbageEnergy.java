@@ -35,7 +35,7 @@ public class GarbageEnergy extends BaseMod
     public static final String MODGUIFACTORY = "net.jmorg.garbageenergy.common.gui.GuiFactory";
     public static final String VERSION = "1.7.10R1.1.0B1";
     public static final String DEPENDENCIES = "required-after:CoFHCore@[1.7.10R3.1.4,1.7.10R3.2.0);";
-    public static final String RELEASEURL = "https://raw.github.com/gromovjm/" + MODID + "/master/version.txt";
+    public static final String RELEASEURL = "https://raw.github.com/gromovjm/garbage-energy/master/version.txt";
     @Mod.Instance(MODID)
     public static GarbageEnergy instance;
     @SidedProxy(clientSide = "net.jmorg.garbageenergy.proxy.ClientProxy", serverSide = "net.jmorg.garbageenergy.proxy.ServerProxy")
