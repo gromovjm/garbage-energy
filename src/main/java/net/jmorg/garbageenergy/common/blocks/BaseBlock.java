@@ -9,15 +9,19 @@ import cofh.lib.util.helpers.RedstoneControlHelper;
 import cofh.lib.util.helpers.SecurityHelper;
 import cofh.lib.util.helpers.ServerHelper;
 import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.utils.Utils;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -28,9 +32,14 @@ public abstract class BaseBlock extends BlockCoFHBase
 {
     protected boolean basicGui = false;
 
+    public static IIcon bottomSide;
+    public static IIcon topSide;
+    public static IIcon side;
+
     public BaseBlock(Material material)
     {
         super(material);
+        setCreativeTab(GarbageEnergy.garbageEnergyTab);
     }
 
     public TileEntity getTile(World world, int x, int y, int z)
@@ -46,6 +55,27 @@ public abstract class BaseBlock extends BlockCoFHBase
     public static String getTileName(String tileName)
     {
         return "tile." + GarbageEnergy.MODID + "." + tileName + ".name";
+    }
+
+    @Override
+    public IIcon getIcon(int blockSide, int metadata)
+    {
+        if (blockSide == 0) {
+            return bottomSide;
+        }
+        if (blockSide == 1) {
+            return topSide;
+        }
+        return side;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegistry)
+    {
+        bottomSide = iconRegistry.registerIcon(GarbageEnergy.MODID + ":bottom_side");
+        topSide = iconRegistry.registerIcon(GarbageEnergy.MODID + ":top_side");
+        side = iconRegistry.registerIcon(GarbageEnergy.MODID + ":side");
     }
 
     @Override

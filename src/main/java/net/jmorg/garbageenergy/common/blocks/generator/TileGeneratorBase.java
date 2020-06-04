@@ -370,19 +370,19 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     {
         if (pass == 0) {
             if (side == 0) {
-                return BlockGenerator.generatorBottomSide;
+                return BlockGenerator.bottomSide;
             } else if (side == 1) {
-                return BlockGenerator.generatorTopSide;
+                return BlockGenerator.topSide;
             }
             if (side == ForgeDirection.OPPOSITES[facing]) {
-                return isActive ? BlockGenerator.generatorActiveOppositeSide : BlockGenerator.generatorOppositeSide;
+                return isActive ? BlockGenerator.activeOppositeSide : BlockGenerator.oppositeSide;
             }
             if (side == facing) {
                 return isActive ? BlockGenerator.faceActive[type] : BlockGenerator.face[type];
             }
-            return BlockGenerator.generatorSide;
+            return BlockGenerator.side;
         }
-        return BlockGenerator.generatorSide;
+        return BlockGenerator.side;
     }
 
     //

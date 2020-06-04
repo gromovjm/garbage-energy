@@ -1,4 +1,4 @@
-package net.jmorg.garbageenergy.common.blocks.generator;
+package net.jmorg.garbageenergy.common.blocks.scanner;
 
 import cofh.api.tileentity.ISidedTexture;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -6,33 +6,28 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.blocks.BaseBlock;
+import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator;
 import net.jmorg.garbageenergy.common.items.ItemBlockGenerator;
+import net.jmorg.garbageenergy.common.items.ItemBlockScanner;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockGenerator extends BaseBlock
+public class BlockScanner extends BaseBlock
 {
-    public static final String NAME = GarbageEnergy.MODID + ".Generator";
+    public static final String NAME = GarbageEnergy.MODID + ".Scanner";
 
     public static IIcon[] face = new IIcon[Types.values().length];
     public static IIcon[] faceActive = new IIcon[Types.values().length];
-    public static IIcon oppositeSide;
-    public static IIcon activeOppositeSide;
 
-    public static ItemStack itemRf;
-    public static ItemStack receiver;
-    public static ItemStack transmitter;
+    public static ItemStack item;
 
-    public BlockGenerator()
+    public BlockScanner()
     {
         super(Material.rock);
         setBlockName(NAME);
@@ -45,17 +40,16 @@ public class BlockGenerator extends BaseBlock
     @Override
     public boolean initialize()
     {
-        TileGeneratorBase.configure();
-        TileItemRFGenerator.initialize();
+        TileItemScanner.initialize();
 
-        itemRf = registerItemStack(NAME + ".ItemRf", Types.ITEM_RF);
+        item = registerItemStack(NAME + ".Item", Types.ITEM);
 
-        return true;
+        return false;
     }
 
     private ItemStack registerItemStack(String name, Types type)
     {
-        ItemStack itemStack = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, type.ordinal()));
+        ItemStack itemStack = ItemBlockScanner.setDefaultTag(new ItemStack(this, 1, type.ordinal()));
         GameRegistry.registerCustomItemStack(name, itemStack);
         return itemStack;
     }
@@ -70,10 +64,7 @@ public class BlockGenerator extends BaseBlock
     @Override
     public IIcon getIcon(int side, int metadata)
     {
-        if (side == 2) {
-            return oppositeSide;
-        }
-        return side != 3 ? super.getIcon(side, metadata) : face[metadata % Types.values().length];
+        return side != 3 ? super.getIcon(side, metadata) : face[metadata % BlockGenerator.Types.values().length];
     }
 
     @Override
@@ -82,40 +73,27 @@ public class BlockGenerator extends BaseBlock
     {
         super.registerBlockIcons(iconRegistry);
 
-        oppositeSide = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/opposite_side");
-        activeOppositeSide = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/active_opposite_side");
-
         for (int i = 0; i < Types.values().length; i++) {
-            face[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/face_" + NAMES[i]);
-            faceActive[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/active_face_" + NAMES[i]);
+            face[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":scanner/face_" + NAMES[i]);
+            faceActive[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":scanner/active_face_" + NAMES[i]);
         }
     }
 
     @Override
     public boolean postInit()
     {
-        GameRegistry.addRecipe(itemRf, "I#I", "I I", "ROR", 'O', Blocks.obsidian, 'R', Items.redstone, 'I', Items.iron_ingot, '#', Blocks.iron_bars);
-
-        return true;
+        return false;
     }
 
     public static void refreshItemStacks()
     {
-        ItemBlockGenerator.setDefaultTag(itemRf);
+        ItemBlockGenerator.setDefaultTag(item);
     }
 
     public static String getTileName(String tileName)
     {
-        return BaseBlock.getTileName("generator." + tileName);
+        return BaseBlock.getTileName("scanner." + tileName);
     }
-
-//    @Override
-//    public void getSubBlocks(Item item, CreativeTabs tab, List list)
-//    {
-//        for (int i = 0; i < Types.values().length; i++) {
-//            list.add(ItemBlockGenerator.setDefaultTag(new ItemStack(item, 1, i)));
-//        }
-//    }
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata)
@@ -123,8 +101,8 @@ public class BlockGenerator extends BaseBlock
         if (metadata >= Types.values().length) return null;
 
         switch (Types.values()[metadata]) {
-            case ITEM_RF:
-                return new TileItemRFGenerator();
+            case ITEM:
+                return new TileItemScanner();
             default:
                 return null;
         }
@@ -161,23 +139,10 @@ public class BlockGenerator extends BaseBlock
         return true;
     }
 
-    @Override
-    public NBTTagCompound getItemStackTag(World world, int x, int y, int z)
-    {
-        NBTTagCompound tag = super.getItemStackTag(world, x, y, z);
-        TileGeneratorBase tile = (TileGeneratorBase) getTile(world, x, y, z);
-
-        if (tag != null && tile != null) {
-            tag.setInteger("Energy", tile.getEnergyStored(ForgeDirection.UNKNOWN));
-        }
-
-        return tag;
-    }
-
-    public static final String[] NAMES = {"itemRf"};
+    public static final String[] NAMES = {"item"};
 
     public enum Types
     {
-        ITEM_RF,
+        ITEM;
     }
 }

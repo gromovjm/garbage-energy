@@ -14,6 +14,7 @@ import net.jmorg.garbageenergy.common.GarbageEnergyBlock;
 import net.jmorg.garbageenergy.common.GarbageEnergyItem;
 import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator;
 import net.jmorg.garbageenergy.common.blocks.generator.TileGeneratorBase;
+import net.jmorg.garbageenergy.common.blocks.scanner.BlockScanner;
 import net.jmorg.garbageenergy.common.gui.GuiHandler;
 import net.jmorg.garbageenergy.network.GarbageEnergyChannelRegistry;
 import net.jmorg.garbageenergy.network.GarbageEnergyPacket;
@@ -128,6 +129,7 @@ public class GarbageEnergy extends BaseMod
     public synchronized void handleIdMapping()
     {
         BlockGenerator.refreshItemStacks();
+        BlockScanner.refreshItemStacks();
     }
 
     public void handleConfigSync(PacketCoFHBase payload)
