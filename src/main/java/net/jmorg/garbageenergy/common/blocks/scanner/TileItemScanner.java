@@ -3,9 +3,7 @@ package net.jmorg.garbageenergy.common.blocks.scanner;
 import cofh.core.network.PacketCoFHBase;
 import cofh.lib.util.helpers.ItemHelper;
 import cofh.lib.util.helpers.MathHelper;
-import cofh.lib.util.helpers.ServerHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.gui.client.scanner.ItemScannerGui;
 import net.jmorg.garbageenergy.common.gui.container.scanner.ItemScannerContainer;
@@ -18,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +28,7 @@ public class TileItemScanner extends TileScanner
 
     public float energyModifier = 0.0F;
     public String[] item = {"", ""};
-    List<ItemStack> queue = new ArrayList<ItemStack>();
+    List<String> queue = new ArrayList<String>();
 
     public TileItemScanner()
     {
@@ -60,7 +59,7 @@ public class TileItemScanner extends TileScanner
             progressMax = queue.size() * 1200;
         } else if (progress % 1200 == 0) {
             // Gets the last item form the queue.
-            String itemUniqueId = Utils.getItemUniqueId(queue.get(queue.size() - 1).getItem());
+            String itemUniqueId = queue.get(queue.size() - 1);
             // Detect than it has configured energy modifier and return that value,
             // else we return default value.
             if (ItemFuelManager.isBurnable(itemUniqueId)) {
@@ -77,10 +76,9 @@ public class TileItemScanner extends TileScanner
             tracker.markTime(worldObj);
             setFinished(true);
             consumeItem();
-        } else {
-            // Else increase the progress.
-            progress += 1;
         }
+        // Else increase the progress.
+        progress += 1;
     }
 
     protected void scanItemStack(ItemStack itemStack)
@@ -93,7 +91,7 @@ public class TileItemScanner extends TileScanner
                 }
             }
         }
-        queue.add(itemStack);
+        queue.add(Utils.getItemUniqueId(itemStack.getItem()));
     }
 
     private boolean ingredientsCraftedFromItem(List<ItemStack> ingredients, ItemStack itemStack)
@@ -112,16 +110,6 @@ public class TileItemScanner extends TileScanner
         return items.contains(RecipeManager.itemName(itemStack));
     }
 
-    public double getItemEnergyModifier()
-    {
-        return Math.floor(energyModifier * 100) / 100;
-    }
-
-    public void setFinished(boolean finished)
-    {
-        this.finished = finished;
-    }
-
     protected void consumeItem()
     {
         item[0] = RecipeManager.itemName(inventory[0]);
@@ -129,6 +117,7 @@ public class TileItemScanner extends TileScanner
         inventory[0] = ItemHelper.consumeItem(inventory[0]);
     }
 
+    @Override
     public void reset()
     {
         item[0] = "";
@@ -136,10 +125,7 @@ public class TileItemScanner extends TileScanner
         energyModifier = 0.0F;
         progress = 0;
         progressMax = 0;
-        setFinished(false);
-        if (ServerHelper.isClientWorld(worldObj)) {
-            sendUpdatePacket(Side.SERVER);
-        }
+        super.reset();
     }
 
     //
@@ -197,6 +183,13 @@ public class TileItemScanner extends TileScanner
         energyModifier = nbt.getFloat("EnergyModifier");
         progress = nbt.getLong("Progress");
         progressMax = nbt.getLong("ProgressMax");
+
+        String stringQueue = nbt.getString("Queue");
+        if (!stringQueue.isEmpty()) {
+            queue = new ArrayList<String>(Arrays.asList(stringQueue.split("/")));
+        } else {
+            queue = new ArrayList<String>();
+        }
     }
 
     @Override
@@ -210,6 +203,7 @@ public class TileItemScanner extends TileScanner
         nbt.setFloat("EnergyModifier", energyModifier);
         nbt.setLong("Progress", progress);
         nbt.setLong("ProgressMax", progressMax);
+        nbt.setString("Queue", String.join("/", queue));
     }
 
     //

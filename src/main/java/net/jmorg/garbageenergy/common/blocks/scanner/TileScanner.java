@@ -93,14 +93,32 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
 
         if (redstoneControlOrDisable() && isActive) {
             scan();
+        } else {
+            isActive = false;
         }
 
         if ((wasActive != isActive && !isFinished) || (isFinished && tracker.hasDelayPassed(worldObj, 10))) {
             sendUpdatePacket(Side.CLIENT);
         }
+        if (wasActive && !finished && inventory[0] == null) {
+            reset();
+        }
+    }
+
+    public void setFinished(boolean finished)
+    {
+        this.finished = finished;
     }
 
     protected abstract void scan();
+
+    protected void reset()
+    {
+        setFinished(false);
+        if (ServerHelper.isClientWorld(worldObj)) {
+            sendUpdatePacket(Side.SERVER);
+        }
+    }
 
     //
     // ISidedTexture

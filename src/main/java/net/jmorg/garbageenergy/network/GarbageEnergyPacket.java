@@ -35,22 +35,18 @@ public class GarbageEnergyPacket extends PacketCoFHBase
 
             switch (PacketTypes.values()[type]) {
                 case RS_POWER_UPDATE:
-                    if (isServer) return;
                     handleRsPowerUpdate(player);
                     return;
                 case RS_CONFIG_UPDATE:
-                    if (isServer) return;
                     handleRsConfigUpdate(player);
                     return;
                 case SECURITY_UPDATE:
-                    if (isServer) return;
                     handleSecurityUpdate(player);
                     return;
                 case TAB_AUGMENT:
                     handleTabAugment(player);
                     return;
                 case CONFIG_SYNC:
-                    if (isServer) return;
                     GarbageEnergy.instance.handleConfigSync(this);
                     return;
                 default:

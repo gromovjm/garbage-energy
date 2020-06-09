@@ -1,6 +1,5 @@
 package net.jmorg.garbageenergy.common.gui.client.scanner;
 
-import cofh.lib.gui.GuiColor;
 import cofh.lib.gui.element.ElementButton;
 import cofh.lib.gui.element.ElementDualScaled;
 import cofh.lib.gui.element.ElementEnergyStored;
@@ -66,12 +65,10 @@ public class ItemScannerGui extends BaseGui
                 TEXTURE)
                 .setToolTip(StringHelper.localize("info.GarbageEnergy.scanner.reset"))
         );
-        scanningResult = (ElementTextField) addElement(new ElementTextField(this, 79, 18, 104, 64)
-                .setBackgroundColor(5, 5, 5)
-                .setTextColor(new GuiColor(245, 245, 245).getColor(), null)
+        scanningResult = (ElementTextField) addElement(new ElementTextField(this, 79, 19, 104, 64)
                 .setMultiline(true)
                 .setFocusable(false)
-                .setMaxLength((short) 100)
+                .setMaxLength((short) 255)
         );
     }
 
@@ -101,20 +98,39 @@ public class ItemScannerGui extends BaseGui
     {
         super.updateElementInformation();
 
+        saveResultButton.setEnabled(tile.finished);
+        resetButton.setEnabled(tile.finished);
         redstoneTab.setVisible(true);
         duration.setQuantity(tile.getScaledProgress(SPEED));
 
+        String scanningText = "";
+        String divider = "-----------------\n";
+        String itemName = tile.item[1];
+        double energyModifier = Math.floor(tile.energyModifier * 100) / 100;
         int progress = 0;
         if (tile.progressMax > 0) {
             progress = (int) (tile.progress * 100 / tile.progressMax);
         }
 
-        saveResultButton.setEnabled(tile.finished);
-        resetButton.setEnabled(tile.finished);
-        if (tile.finished && !tile.item[1].equals("") && tile.energyModifier > 0) {
-            scanningResult.setText("Item:\n  " + tile.item[1] + "\nEnergy modifier:\n  " + tile.getItemEnergyModifier());
+        if (tile.finished && !itemName.equals("") && energyModifier > 0) {
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanned") + "\n";
+            scanningText += divider;
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.item") + ": " + itemName + "\n";
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.energyModifier") + ": " + energyModifier + "\n";
+        } else if (!tile.finished && tile.isActive) {
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanning") + "\n";
+            scanningText += divider;
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.process") + ": " + progress + "%\n";
         } else {
-            scanningResult.setText("Scanning...\n" + tile.progress + " / " + tile.progressMax + "\n" + progress + "%");
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle") + "\n";
+            scanningText += divider;
+            if (!tile.isActive) {
+                scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle.disabled") + "\n";
+            } else if (tile.inventory[0] != null) {
+                scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle.nei") + "\n";
+            }
         }
+
+        scanningResult.setText(scanningText);
     }
 }

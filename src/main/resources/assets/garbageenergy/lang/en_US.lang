@@ -18,6 +18,14 @@ info.tab.GarbageEnergy.scanner.item.2=Recorded card can be put to generator and 
 info.GarbageEnergy.generator.rfFromItem=RF * item
 info.GarbageEnergy.scanner.saveResult=Save result
 info.GarbageEnergy.scanner.reset=Reset result
+info.GarbageEnergy.scanner.scanning=Scanning...
+info.GarbageEnergy.scanner.scanned=Scanned.
+info.GarbageEnergy.scanner.idle=Idle.
+info.GarbageEnergy.scanner.idle.nei=Put an item to slot.
+info.GarbageEnergy.scanner.idle.disabled=Scanner is disabled.
+info.GarbageEnergy.scanner.process=Process
+info.GarbageEnergy.scanner.item=Item
+info.GarbageEnergy.scanner.energyModifier=Energy mod
 
 # Tooltips
 tooltip.itemRgGenerationFromItem=Energy producing modifier
