@@ -4,13 +4,18 @@ import cofh.api.item.IToolHammer;
 import cofh.api.transport.IItemDuct;
 import cofh.lib.util.helpers.BlockHelper;
 import cofh.lib.util.helpers.InventoryHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class Utils
 {
@@ -80,5 +85,10 @@ public class Utils
         stack = InventoryHelper.addToInsertion(tile, from, stack);
 
         return stack == null ? 0 : stack.stackSize;
+    }
+
+    public static String getItemUniqueId(Item item)
+    {
+        return GameRegistry.findUniqueIdentifierFor(item).toString();
     }
 }

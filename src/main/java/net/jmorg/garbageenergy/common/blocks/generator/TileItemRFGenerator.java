@@ -38,12 +38,6 @@ public class TileItemRFGenerator extends TileGeneratorBase
     }
 
     @Override
-    public boolean canUpdate()
-    {
-        return true;
-    }
-
-    @Override
     protected boolean canGenerate()
     {
         return getEnergyValue(inventory[0]) > 0;

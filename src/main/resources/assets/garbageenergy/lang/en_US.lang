@@ -3,15 +3,21 @@ item.GarbageEnergy.wrench.name=Wrench
 
 # blocks
 tile.GarbageEnergy.generator.itemRf.name=Item RF generator
-tile.GarbageEnergy.generator.receiver.name=Receiver
-tile.GarbageEnergy.generator.transmitter.name=Energy transmitter
+tile.GarbageEnergy.scanner.item.name=Item scanner
 
 # CoFHCore GUI tabs
 info.tab.GarbageEnergy.generator.0=Use this generator for produce energy from resources that you not needed.
 info.tab.GarbageEnergy.generator.itemRf.0=This generator cans produse RF energy from some items.
 info.tab.GarbageEnergy.generator.itemRf.1=Items that you can put to that generator are subscribed.
 info.tab.GarbageEnergy.generator.itemRf.2=Do not put your diamonds to it!
+
+info.tab.GarbageEnergy.scanner.item.0=Scans items or blocks and shows Energy modifier for it for Item RF generator.
+info.tab.GarbageEnergy.scanner.item.1=You can put card to appropriate slot and after scanning save result to it.
+info.tab.GarbageEnergy.scanner.item.2=Recorded card can be put to generator and you will can generate an energy from items that recorded on card.
+
 info.GarbageEnergy.generator.rfFromItem=RF * item
+info.GarbageEnergy.scanner.saveResult=Save result
+info.GarbageEnergy.scanner.reset=Reset result
 
 # Tooltips
 tooltip.itemRgGenerationFromItem=Energy producing modifier

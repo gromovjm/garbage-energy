@@ -3,9 +3,9 @@ package net.jmorg.garbageenergy.common.items;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.minecraft.item.Item;
 
-public class ItemGeneric extends Item
+public class BaseItem extends Item
 {
-    public ItemGeneric()
+    public BaseItem()
     {
         super();
 

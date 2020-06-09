@@ -16,6 +16,7 @@ import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator;
 import net.jmorg.garbageenergy.common.blocks.generator.TileGeneratorBase;
 import net.jmorg.garbageenergy.common.blocks.scanner.BlockScanner;
 import net.jmorg.garbageenergy.common.gui.GuiHandler;
+import net.jmorg.garbageenergy.crafting.RecipeManager;
 import net.jmorg.garbageenergy.network.GarbageEnergyChannelRegistry;
 import net.jmorg.garbageenergy.network.GarbageEnergyPacket;
 import net.jmorg.garbageenergy.proxy.CommonProxy;
@@ -34,7 +35,7 @@ public class GarbageEnergy extends BaseMod
     public static final String MODID = "GarbageEnergy";
     public static final String MODNAME = "Garbage Energy";
     public static final String MODGUIFACTORY = "net.jmorg.garbageenergy.common.gui.GuiFactory";
-    public static final String VERSION = "1.7.10R1.1.0B1";
+    public static final String VERSION = "1.7.10R1.2.0B1";
     public static final String DEPENDENCIES = "required-after:CoFHCore@[1.7.10R3.1.4,1.7.10R3.2.0);";
     public static final String RELEASEURL = "https://raw.github.com/gromovjm/garbage-energy/master/version.txt";
     @Mod.Instance(MODID)
@@ -103,8 +104,6 @@ public class GarbageEnergy extends BaseMod
     @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event)
     {
-        // Load recipes
-
         // Clean up configs.
         cleanConfig();
         config.cleanUp(false, true);
@@ -124,6 +123,7 @@ public class GarbageEnergy extends BaseMod
     public void serverStarting(FMLServerStartedEvent event)
     {
         handleIdMapping();
+        RecipeManager.initialize();
     }
 
     public synchronized void handleIdMapping()

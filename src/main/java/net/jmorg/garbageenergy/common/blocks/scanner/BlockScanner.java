@@ -24,6 +24,7 @@ public class BlockScanner extends BaseBlock
 
     public static IIcon[] face = new IIcon[Types.values().length];
     public static IIcon[] faceActive = new IIcon[Types.values().length];
+    public static IIcon[] faceFinished = new IIcon[BlockGenerator.Types.values().length];
 
     public static ItemStack item;
 
@@ -40,6 +41,7 @@ public class BlockScanner extends BaseBlock
     @Override
     public boolean initialize()
     {
+        TileScanner.configure();
         TileItemScanner.initialize();
 
         item = registerItemStack(NAME + ".Item", Types.ITEM);
@@ -76,6 +78,7 @@ public class BlockScanner extends BaseBlock
         for (int i = 0; i < Types.values().length; i++) {
             face[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":scanner/face_" + NAMES[i]);
             faceActive[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":scanner/active_face_" + NAMES[i]);
+            faceFinished[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":scanner/finished_face_" + NAMES[i]);
         }
     }
 

@@ -1,15 +1,17 @@
 package net.jmorg.garbageenergy.common.items.tool;
 
-import net.jmorg.garbageenergy.common.items.ItemGeneric;
+import net.jmorg.garbageenergy.GarbageEnergy;
+import net.jmorg.garbageenergy.common.items.BaseItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ToolGeneric extends ItemGeneric
+public class ToolGeneric extends BaseItem
 {
     public ToolGeneric()
     {
         setMaxStackSize(1);
+        setTextureName(GarbageEnergy.MODID + ":tools/" + getName());
     }
 
     @Override

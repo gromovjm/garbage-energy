@@ -9,13 +9,13 @@ import cofh.core.CoFHProps;
 import cofh.core.network.PacketCoFHBase;
 import cofh.lib.util.TimeTracker;
 import cofh.lib.util.helpers.*;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.blocks.TileReconfigurable;
 import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator.Types;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
+import net.jmorg.garbageenergy.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -113,7 +113,7 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
             return 0F;
         }
 
-        String item = GameRegistry.findUniqueIdentifierFor(stack.getItem()).toString();
+        String item = Utils.getItemUniqueId(stack.getItem());
         if (ItemFuelManager.isBurnable(item)) {
             return (float) ItemFuelManager.getBurningTime(item);
         }
@@ -193,6 +193,12 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     {
         super.onNeighborTileChange(tileX, tileY, tileZ);
         updateEnergyReceiver();
+    }
+
+    @Override
+    public boolean canUpdate()
+    {
+        return true;
     }
 
     @Override
@@ -331,6 +337,12 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     }
 
     @Override
+    public boolean canExtractItem(int slot, ItemStack stack, int side)
+    {
+        return false;
+    }
+
+    @Override
     public boolean canInsertItem(int slot, ItemStack stack, int side)
     {
         return side != facing && isItemValidForSlot(slot, stack);
@@ -341,12 +353,6 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     {
         if (slot > inventory.length) return false;
         return getEnergyValue(stack) > 0;
-    }
-
-    @Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side)
-    {
-        return false;
     }
 
     @Override
@@ -402,9 +408,6 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         super.readFromNBT(nbt);
 
         energyStorage.readFromNBT(nbt);
-
-        facing = (byte) (nbt.getByte("Facing") % 6);
-        isActive = nbt.getBoolean("Active");
         progress = nbt.getInteger("Fuel");
     }
 
@@ -414,24 +417,11 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         super.writeToNBT(nbt);
 
         energyStorage.writeToNBT(nbt);
-
-        nbt.setByte("Facing", facing);
-        nbt.setBoolean("Active", isActive);
         nbt.setFloat("Fuel", progress);
     }
 
     //
     // Network
-    @Override
-    public PacketCoFHBase getPacket()
-    {
-        PacketCoFHBase payload = super.getPacket();
-
-        payload.addByte(facing);
-
-        return payload;
-    }
-
     @Override
     public PacketCoFHBase getGuiPacket()
     {
@@ -452,17 +442,5 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         energyStorage.setCapacity(payload.getInt());
         energyStorage.setEnergyStored(payload.getInt());
         progress = payload.getFloat();
-    }
-
-    @Override
-    public void handleTilePacket(PacketCoFHBase payload, boolean isServer)
-    {
-        super.handleTilePacket(payload, isServer);
-
-        if (!isServer) {
-            facing = payload.getByte();
-        } else {
-            payload.getByte();
-        }
     }
 }
