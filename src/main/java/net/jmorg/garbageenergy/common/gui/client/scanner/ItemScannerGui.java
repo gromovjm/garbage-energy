@@ -104,7 +104,7 @@ public class ItemScannerGui extends BaseGui
         duration.setQuantity(tile.getScaledProgress(SPEED));
 
         String scanningText = "";
-        String divider = "-----------------\n";
+        String divider = "----------------------------------\n";
         String itemName = tile.item[1];
         double energyModifier = Math.floor(tile.energyModifier * 100) / 100;
         int progress = 0;
@@ -121,6 +121,7 @@ public class ItemScannerGui extends BaseGui
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanning") + "\n";
             scanningText += divider;
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.process") + ": " + progress + "%\n";
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.leftTime") + ": " + getLeftTime() + "\n";
         } else {
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle") + "\n";
             scanningText += divider;
@@ -132,5 +133,33 @@ public class ItemScannerGui extends BaseGui
         }
 
         scanningResult.setText(scanningText);
+    }
+
+    private String getLeftTime()
+    {
+        String leftTime = "";
+        long leftSeconds = (tile.progressMax - tile.progress) / 20;
+        int seconds = (int) (leftSeconds % 59);
+        long leftMinutes = (leftSeconds - seconds) / 59;
+        int minutes = (int) (leftMinutes % 59);
+        int hours = (int) ((leftMinutes - minutes) / 23);
+
+        if (String.valueOf(hours).length() < 2) {
+            leftTime += "0" + hours + ":";
+        } else {
+            leftTime += hours + ":";
+        }
+        if (String.valueOf(minutes).length() < 2) {
+            leftTime += "0" + minutes + ":";
+        } else {
+            leftTime += minutes + ":";
+        }
+        if (String.valueOf(seconds).length() < 2) {
+            leftTime += "0" + seconds;
+        } else {
+            leftTime += seconds;
+        }
+
+        return leftTime;
     }
 }

@@ -94,6 +94,13 @@ public class TileItemScanner extends TileScanner
         queue.add(Utils.getItemUniqueId(itemStack.getItem()));
     }
 
+    protected void consumeItem()
+    {
+        item[0] = RecipeManager.itemName(inventory[0]);
+        item[1] = inventory[0].getDisplayName();
+        inventory[0] = ItemHelper.consumeItem(inventory[0]);
+    }
+
     private boolean ingredientsCraftedFromItem(List<ItemStack> ingredients, ItemStack itemStack)
     {
         for (ItemStack ingredient : ingredients) {
@@ -108,13 +115,6 @@ public class TileItemScanner extends TileScanner
     {
         Set<String> items = recipeManager.getRecipes().keySet();
         return items.contains(RecipeManager.itemName(itemStack));
-    }
-
-    protected void consumeItem()
-    {
-        item[0] = RecipeManager.itemName(inventory[0]);
-        item[1] = inventory[0].getDisplayName();
-        inventory[0] = ItemHelper.consumeItem(inventory[0]);
     }
 
     @Override

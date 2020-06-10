@@ -24,6 +24,7 @@ info.GarbageEnergy.scanner.idle=Простаивание.
 info.GarbageEnergy.scanner.idle.nei=Поместите предмет в слот.
 info.GarbageEnergy.scanner.idle.disabled=Сканер выключен.
 info.GarbageEnergy.scanner.process=Процесс
+info.GarbageEnergy.scanner.leftTime=Оставшееся время
 info.GarbageEnergy.scanner.item=Предмет
 info.GarbageEnergy.scanner.energyModifier=Мод. енергии
 

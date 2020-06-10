@@ -24,6 +24,7 @@ info.GarbageEnergy.scanner.idle=Idle.
 info.GarbageEnergy.scanner.idle.nei=Put an item to slot.
 info.GarbageEnergy.scanner.idle.disabled=Scanner is disabled.
 info.GarbageEnergy.scanner.process=Process
+info.GarbageEnergy.scanner.leftTime=Left time
 info.GarbageEnergy.scanner.item=Item
 info.GarbageEnergy.scanner.energyModifier=Energy mod
 
