@@ -56,7 +56,10 @@ public class TileItemScanner extends TileScanner
             // When scanning is started we prepare a queue.
             // On the next steps we handle the queue.
             scanItemStack(inventory[0]);
+            item[0] = RecipeManager.itemName(inventory[0]);
+            item[1] = inventory[0].getDisplayName();
             progressMax = queue.size() * 1200;
+            ecc = 5;
         } else if (progress % 1200 == 0) {
             // Gets the last item form the queue.
             String itemUniqueId = queue.get(queue.size() - 1);
@@ -73,32 +76,36 @@ public class TileItemScanner extends TileScanner
             // When we finish progress we mark this tile,
             // set it to finished state and
             // consume scanned item.
-            tracker.markTime(worldObj);
             setFinished(true);
-            consumeItem();
+            tracker.markTime(worldObj);
+            inventory[0] = ItemHelper.consumeItem(inventory[0]);
+            ecc = 0;
         }
         // Else increase the progress.
         progress += 1;
+        ecc = 1;
+    }
+
+    @Override
+    protected boolean check()
+    {
+        return !finished && inventory[0] == null;
     }
 
     protected void scanItemStack(ItemStack itemStack)
     {
         if (isCraftable(itemStack)) {
             List<ItemStack> ingredients = recipeManager.getRecipeIngredients(RecipeManager.itemName(itemStack));
-            if (!ingredientsCraftedFromItem(ingredients, itemStack)) {
+            if (ingredientsCraftedFromItem(ingredients, itemStack)) {
+                queue.add(Utils.getItemUniqueId(itemStack.getItem()));
+            } else {
                 for (ItemStack ingredient : ingredients) {
                     scanItemStack(ingredient);
                 }
             }
+        } else {
+            queue.add(Utils.getItemUniqueId(itemStack.getItem()));
         }
-        queue.add(Utils.getItemUniqueId(itemStack.getItem()));
-    }
-
-    protected void consumeItem()
-    {
-        item[0] = RecipeManager.itemName(inventory[0]);
-        item[1] = inventory[0].getDisplayName();
-        inventory[0] = ItemHelper.consumeItem(inventory[0]);
     }
 
     private boolean ingredientsCraftedFromItem(List<ItemStack> ingredients, ItemStack itemStack)
@@ -120,9 +127,10 @@ public class TileItemScanner extends TileScanner
     @Override
     public void reset()
     {
+        queue = new ArrayList<String>();
+        energyModifier = 0.0F;
         item[0] = "";
         item[1] = "";
-        energyModifier = 0.0F;
         progress = 0;
         progressMax = 0;
         super.reset();
@@ -181,6 +189,7 @@ public class TileItemScanner extends TileScanner
         item[0] = nbt.getString("ItemName");
         item[1] = nbt.getString("ItemDisplayName");
         energyModifier = nbt.getFloat("EnergyModifier");
+        ecc = nbt.getInteger("EnergyMod");
         progress = nbt.getLong("Progress");
         progressMax = nbt.getLong("ProgressMax");
 
@@ -201,6 +210,7 @@ public class TileItemScanner extends TileScanner
         nbt.setString("ItemName", item[0]);
         nbt.setString("ItemDisplayName", item[1]);
         nbt.setFloat("EnergyModifier", energyModifier);
+        nbt.setInteger("EnergyMod", ecc);
         nbt.setLong("Progress", progress);
         nbt.setLong("ProgressMax", progressMax);
         nbt.setString("Queue", String.join("/", queue));
@@ -217,6 +227,7 @@ public class TileItemScanner extends TileScanner
         payload.addString(item[0]);
         payload.addString(item[1]);
         payload.addFloat(energyModifier);
+        payload.addInt(ecc);
         payload.addLong(progress);
         payload.addLong(progressMax);
 
@@ -241,6 +252,7 @@ public class TileItemScanner extends TileScanner
         item[0] = payload.getString();
         item[1] = payload.getString();
         energyModifier = payload.getFloat();
+        ecc = payload.getInt();
         progress = payload.getLong();
         progressMax = payload.getLong();
     }

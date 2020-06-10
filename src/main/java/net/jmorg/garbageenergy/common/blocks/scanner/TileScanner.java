@@ -25,6 +25,8 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
     public static final boolean[] enableSecurityConfig = new boolean[BlockScanner.Types.values().length];
     protected TimeTracker tracker = new TimeTracker();
     protected EnergyConfig energyConfig;
+    // Energy consume coefficient.
+    protected int ecc;
 
     public boolean finished = false;
     public long progressMax = 0;
@@ -92,25 +94,28 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
         boolean isFinished = finished;
 
         if (redstoneControlOrDisable() && isActive) {
+            if (check()) reset();
             scan();
+            consumeEnergy();
         } else {
+            if (check()) reset();
             isActive = false;
         }
 
         if ((wasActive != isActive && !isFinished) || (isFinished && tracker.hasDelayPassed(worldObj, 10))) {
             sendUpdatePacket(Side.CLIENT);
         }
-        if (wasActive && !finished && inventory[0] == null) {
-            reset();
-        }
-    }
-
-    public void setFinished(boolean finished)
-    {
-        this.finished = finished;
     }
 
     protected abstract void scan();
+
+    protected abstract boolean check();
+
+    protected void consumeEnergy()
+    {
+        int energy = calcEnergy();
+        energyStorage.modifyEnergyStored(-energy * ecc);
+    }
 
     protected void reset()
     {
@@ -118,6 +123,25 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
         if (ServerHelper.isClientWorld(worldObj)) {
             sendUpdatePacket(Side.SERVER);
         }
+    }
+
+    protected int calcEnergy()
+    {
+        if (!isActive) {
+            return 0;
+        }
+        if (energyStorage.getEnergyStored() > energyConfig.maxPowerLevel) {
+            return energyConfig.maxPower;
+        }
+        if (energyStorage.getEnergyStored() < energyConfig.minPowerLevel) {
+            return energyConfig.minPower;
+        }
+        return energyStorage.getEnergyStored() / energyConfig.energyRamp;
+    }
+
+    public void setFinished(boolean finished)
+    {
+        this.finished = finished;
     }
 
     //
@@ -149,6 +173,32 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
     public int getScaledProgress(int scale)
     {
         return 0;
+    }
+
+    //
+    // IEnergyInfo
+    @Override
+    public int getInfoEnergyPerTick()
+    {
+        return calcEnergy() * ecc;
+    }
+
+    @Override
+    public int getInfoMaxEnergyPerTick()
+    {
+        return energyConfig.maxPower * ecc;
+    }
+
+    @Override
+    public int getInfoMaxEnergyStored()
+    {
+        return energyConfig.maxEnergy;
+    }
+
+    @Override
+    public int getInfoEnergyStored()
+    {
+        return energyStorage.getEnergyStored();
     }
 
     //

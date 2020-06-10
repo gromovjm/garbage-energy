@@ -1,5 +1,6 @@
 package net.jmorg.garbageenergy.common.gui.client.scanner;
 
+import cofh.core.gui.element.TabEnergy;
 import cofh.lib.gui.element.ElementButton;
 import cofh.lib.gui.element.ElementDualScaled;
 import cofh.lib.gui.element.ElementEnergyStored;
@@ -11,6 +12,7 @@ import net.jmorg.garbageenergy.common.gui.client.BaseGui;
 import net.jmorg.garbageenergy.common.gui.container.scanner.ItemScannerContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class ItemScannerGui extends BaseGui
 {
@@ -44,6 +46,11 @@ public class ItemScannerGui extends BaseGui
     public void initGui()
     {
         super.initGui();
+
+        if (tile.getMaxEnergyStored(ForgeDirection.UNKNOWN) > 0) {
+            addTab(new TabEnergy(this, tile, false));
+        }
+
         addElement(new ElementEnergyStored(this, 8, 22, tile.getEnergyStorage()));
         duration = (ElementDualScaled) addElement(new ElementDualScaled(this, 43, 63)
                 .setSize(16, 16)
@@ -112,23 +119,24 @@ public class ItemScannerGui extends BaseGui
             progress = (int) (tile.progress * 100 / tile.progressMax);
         }
 
-        if (tile.finished && !itemName.equals("") && energyModifier > 0) {
+        if (tile.isActive && !tile.finished) {
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanning") + "\n";
+            scanningText += divider;
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.item") + ": " + itemName + "\n";
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.process") + ": " + progress + "%\n";
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.leftTime") + ": " + getLeftTime() + "\n";
+        } else if (tile.finished) {
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanned") + "\n";
             scanningText += divider;
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.item") + ": " + itemName + "\n";
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.energyModifier") + ": " + energyModifier + "\n";
-        } else if (!tile.finished && tile.isActive) {
-            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanning") + "\n";
-            scanningText += divider;
-            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.process") + ": " + progress + "%\n";
-            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.leftTime") + ": " + getLeftTime() + "\n";
         } else {
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle") + "\n";
             scanningText += divider;
-            if (!tile.isActive) {
-                scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle.disabled") + "\n";
-            } else if (tile.inventory[0] != null) {
+            if (tile.inventory[0] == null) {
                 scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle.nei") + "\n";
+            } else if (!tile.redstoneControlOrDisable()) {
+                scanningText += StringHelper.localize("info.GarbageEnergy.scanner.idle.disabled") + "\n";
             }
         }
 

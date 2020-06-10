@@ -4,12 +4,13 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyReceiver;
 import cofh.api.energy.IEnergyStorage;
+import cofh.api.tileentity.IEnergyInfo;
 import cofh.core.network.PacketCoFHBase;
 import cofh.lib.util.helpers.EnergyHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TilePowered extends TileReconfigurable implements IEnergyReceiver
+public abstract class TilePowered extends TileReconfigurable implements IEnergyReceiver, IEnergyInfo
 {
     protected EnergyStorage energyStorage;
 
