@@ -7,6 +7,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.gui.client.scanner.ItemScannerGui;
 import net.jmorg.garbageenergy.common.gui.container.scanner.ItemScannerContainer;
+import net.jmorg.garbageenergy.common.items.ItemDataCard;
 import net.jmorg.garbageenergy.crafting.RecipeManager;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
@@ -26,7 +27,7 @@ public class TileItemScanner extends TileScanner
     private static final int[] SLOTS = new int[]{0, 1, 2};
     private static final RecipeManager recipeManager = RecipeManager.getInstance();
 
-    public float energyModifier = 0.0F;
+    public float itemEnergyModifier = 0.0F;
     public String[] item = {"", ""};
     List<String> queue = new ArrayList<String>();
 
@@ -66,9 +67,9 @@ public class TileItemScanner extends TileScanner
             // Detect than it has configured energy modifier and return that value,
             // else we return default value.
             if (ItemFuelManager.isBurnable(itemUniqueId)) {
-                energyModifier += (float) ItemFuelManager.getBurningTime(itemUniqueId);
+                itemEnergyModifier += (float) ItemFuelManager.getBurningTime(itemUniqueId);
             } else {
-                energyModifier += 0.1F;
+                itemEnergyModifier += 0.1F;
             }
             // Remove the last queue item.
             queue.remove(queue.size() - 1);
@@ -84,6 +85,21 @@ public class TileItemScanner extends TileScanner
         // Else increase the progress.
         progress += 1;
         ecc = 1;
+    }
+
+    @Override
+    public void saveResult()
+    {
+        if (inventory[1] == null) return;
+
+        if (inventory[1].getItem() instanceof ItemDataCard) {
+            ItemDataCard dataCard = (ItemDataCard) inventory[1].getItem();
+            dataCard.setItemId(item[0]);
+            dataCard.setItemDisplayName(item[1]);
+            dataCard.setItemEnergyModifier(itemEnergyModifier);
+            dataCard.setSubscribed(true);
+            resetResult();
+        }
     }
 
     @Override
@@ -125,15 +141,15 @@ public class TileItemScanner extends TileScanner
     }
 
     @Override
-    public void reset()
+    public void resetResult()
     {
         queue = new ArrayList<String>();
-        energyModifier = 0.0F;
+        itemEnergyModifier = 0.0F;
         item[0] = "";
         item[1] = "";
         progress = 0;
         progressMax = 0;
-        super.reset();
+        super.resetResult();
     }
 
     //
@@ -188,7 +204,7 @@ public class TileItemScanner extends TileScanner
         finished = nbt.getBoolean("Finished");
         item[0] = nbt.getString("ItemName");
         item[1] = nbt.getString("ItemDisplayName");
-        energyModifier = nbt.getFloat("EnergyModifier");
+        itemEnergyModifier = nbt.getFloat("EnergyModifier");
         ecc = nbt.getInteger("EnergyMod");
         progress = nbt.getLong("Progress");
         progressMax = nbt.getLong("ProgressMax");
@@ -209,7 +225,7 @@ public class TileItemScanner extends TileScanner
         nbt.setBoolean("Finished", finished);
         nbt.setString("ItemName", item[0]);
         nbt.setString("ItemDisplayName", item[1]);
-        nbt.setFloat("EnergyModifier", energyModifier);
+        nbt.setFloat("EnergyModifier", itemEnergyModifier);
         nbt.setInteger("EnergyMod", ecc);
         nbt.setLong("Progress", progress);
         nbt.setLong("ProgressMax", progressMax);
@@ -226,7 +242,7 @@ public class TileItemScanner extends TileScanner
         payload.addBool(finished);
         payload.addString(item[0]);
         payload.addString(item[1]);
-        payload.addFloat(energyModifier);
+        payload.addFloat(itemEnergyModifier);
         payload.addInt(ecc);
         payload.addLong(progress);
         payload.addLong(progressMax);
@@ -251,7 +267,7 @@ public class TileItemScanner extends TileScanner
         setFinished(payload.getBool());
         item[0] = payload.getString();
         item[1] = payload.getString();
-        energyModifier = payload.getFloat();
+        itemEnergyModifier = payload.getFloat();
         ecc = payload.getInt();
         progress = payload.getLong();
         progressMax = payload.getLong();

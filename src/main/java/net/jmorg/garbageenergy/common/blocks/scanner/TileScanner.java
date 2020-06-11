@@ -94,11 +94,11 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
         boolean isFinished = finished;
 
         if (redstoneControlOrDisable() && isActive) {
-            if (check()) reset();
+            if (check()) resetResult();
             scan();
             consumeEnergy();
         } else {
-            if (check()) reset();
+            if (check()) resetResult();
             isActive = false;
         }
 
@@ -107,22 +107,24 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
         }
     }
 
-    protected abstract void scan();
-
     protected abstract boolean check();
 
-    protected void consumeEnergy()
-    {
-        int energy = calcEnergy();
-        energyStorage.modifyEnergyStored(-energy * ecc);
-    }
+    protected abstract void scan();
 
-    protected void reset()
+    public abstract void saveResult();
+
+    public void resetResult()
     {
         setFinished(false);
         if (ServerHelper.isClientWorld(worldObj)) {
             sendUpdatePacket(Side.SERVER);
         }
+    }
+
+    protected void consumeEnergy()
+    {
+        int energy = calcEnergy();
+        energyStorage.modifyEnergyStored(-energy * ecc);
     }
 
     protected int calcEnergy()

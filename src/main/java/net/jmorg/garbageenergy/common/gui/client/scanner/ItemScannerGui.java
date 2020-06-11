@@ -82,10 +82,10 @@ public class ItemScannerGui extends BaseGui
     public void handleElementButtonClick(String buttonName, int mouseButton)
     {
         if (buttonName.equals("SaveResult")) {
-
+            tile.saveResult();
         }
         if (buttonName.equals("ResetResult")) {
-            tile.reset();
+            tile.resetResult();
         }
         playSound("random.click", 1.0F, 0.8F);
     }
@@ -113,7 +113,7 @@ public class ItemScannerGui extends BaseGui
         String scanningText = "";
         String divider = "----------------------------------\n";
         String itemName = tile.item[1];
-        double energyModifier = Math.floor(tile.energyModifier * 100) / 100;
+        double energyModifier = Math.floor(tile.itemEnergyModifier * 100) / 100;
         int progress = 0;
         if (tile.progressMax > 0) {
             progress = (int) (tile.progress * 100 / tile.progressMax);
