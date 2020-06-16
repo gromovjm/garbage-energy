@@ -90,15 +90,15 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
         }
 
         boolean wasActive = isActive;
-        isActive = inventory[0] != null && !finished;
+        isActive = shouldActive();
         boolean isFinished = finished;
 
         if (redstoneControlOrDisable() && isActive) {
-            if (check()) resetResult(false);
+            checkAndReset();
             scan();
             consumeEnergy();
         } else {
-            if (check()) resetResult(false);
+            checkAndReset();
             isActive = false;
         }
 
@@ -107,7 +107,17 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
         }
     }
 
+    protected abstract boolean shouldActive();
+
     protected abstract boolean check();
+
+    protected void checkAndReset()
+    {
+        if (check()) {
+            resetResult(false);
+            sendUpdatePacket(Side.CLIENT);
+        }
+    }
 
     protected abstract void scan();
 

@@ -87,9 +87,17 @@ public class TileItemScanner extends TileScanner
     }
 
     @Override
+    protected boolean shouldActive()
+    {
+        return inventory[0] != null && !finished;
+    }
+
+    @Override
     protected boolean check()
     {
-        return !finished && inventory[0] == null;
+        boolean isWorkedAndEmptyInv = !finished && progress > 0 && inventory[0] == null;
+        boolean hasItemAndPutOther = !finished && inventory[0] != null && !RecipeManager.itemName(inventory[0]).equals(item[0]);
+        return isWorkedAndEmptyInv || hasItemAndPutOther;
     }
 
     protected void scanItemStack(ItemStack itemStack)
@@ -238,6 +246,8 @@ public class TileItemScanner extends TileScanner
     public PacketCoFHBase getGuiPacket()
     {
         PacketCoFHBase payload = super.getGuiPacket();
+        payload.addString(item[0]);
+        payload.addString(item[1]);
         payload.addLong(progress);
         payload.addLong(progressMax);
         return payload;
@@ -261,6 +271,8 @@ public class TileItemScanner extends TileScanner
     protected void handleGuiPacket(PacketCoFHBase payload)
     {
         super.handleGuiPacket(payload);
+        item[0] = payload.getString();
+        item[1] = payload.getString();
         progress = payload.getLong();
         progressMax = payload.getLong();
     }
