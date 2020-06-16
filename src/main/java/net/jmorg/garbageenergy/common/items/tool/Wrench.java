@@ -5,26 +5,32 @@ import cofh.api.item.IToolHammer;
 import cofh.lib.util.helpers.BlockHelper;
 import cofh.lib.util.helpers.ServerHelper;
 import cpw.mods.fml.common.eventhandler.Event.Result;
+import net.jmorg.garbageenergy.GarbageEnergy;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class WrenchTool extends ToolGeneric implements IToolHammer
+public class Wrench extends Item implements IToolHammer
 {
-    public WrenchTool()
+    public Wrench()
     {
+        setMaxStackSize(1);
+        setCreativeTab(GarbageEnergy.garbageEnergyTab);
+        setTextureName(GarbageEnergy.MODID + ":tools/wrench");
+        setUnlocalizedName(GarbageEnergy.MODID + ".wrench");
         setHarvestLevel("wrench", 1);
     }
 
     @Override
-    public String getName()
-    {
-        return "wrench";
+    public boolean isFull3D() {
+
+        return true;
     }
 
     @Override

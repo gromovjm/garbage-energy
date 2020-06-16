@@ -1,11 +1,10 @@
 package net.jmorg.garbageenergy.network;
 
 import cofh.api.tileentity.IRedstoneControl;
-import cofh.api.tileentity.ISecurable;
 import cofh.core.network.PacketCoFHBase;
 import cofh.core.network.PacketHandler;
-import cofh.lib.gui.container.IAugmentableContainer;
 import net.jmorg.garbageenergy.GarbageEnergy;
+import net.jmorg.garbageenergy.utils.IDataCardManageable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -19,7 +18,7 @@ public class GarbageEnergyPacket extends PacketCoFHBase
 
     public enum PacketTypes
     {
-        RS_POWER_UPDATE, RS_CONFIG_UPDATE, SECURITY_UPDATE, TAB_AUGMENT, CONFIG_SYNC,
+        RS_POWER_UPDATE, RS_CONFIG_UPDATE, CONFIG_SYNC, DATA_CARD_WRITE
     }
 
     public enum PacketID
@@ -40,17 +39,14 @@ public class GarbageEnergyPacket extends PacketCoFHBase
                 case RS_CONFIG_UPDATE:
                     handleRsConfigUpdate(player);
                     return;
-                case SECURITY_UPDATE:
-                    handleSecurityUpdate(player);
-                    return;
-                case TAB_AUGMENT:
-                    handleTabAugment(player);
+                case DATA_CARD_WRITE:
+                    handleDataCardWriteUpdate(player);
                     return;
                 case CONFIG_SYNC:
                     GarbageEnergy.instance.handleConfigSync(this);
                     return;
                 default:
-                    GarbageEnergy.log.error("Unknown Packet! Internal: GEPH, ID: " + type);
+                    GarbageEnergy.log.error("[Unknown Packet] PacketId: " + type);
             }
         } catch (Exception e) {
             GarbageEnergy.log.error("Packet payload failure! Please check your config files!");
@@ -68,19 +64,14 @@ public class GarbageEnergyPacket extends PacketCoFHBase
         PacketHandler.sendToServer(getPacket(PacketTypes.RS_CONFIG_UPDATE).addCoords(x, y, z).addByte(rs.getControl().ordinal()));
     }
 
-    public static void sendSecurityPacketToServer(ISecurable securable)
-    {
-        PacketHandler.sendToServer(getPacket(PacketTypes.SECURITY_UPDATE).addByte(securable.getAccess().ordinal()));
-    }
-
-    public static void sendTabAugmentPacketToServer(boolean lock)
-    {
-        PacketHandler.sendToServer(getPacket(PacketTypes.TAB_AUGMENT).addBool(lock));
-    }
-
     public static void sendConfigSyncPacketToClient(EntityPlayer player)
     {
         PacketHandler.sendTo(GarbageEnergy.instance.getConfigSync(), player);
+    }
+
+    public static void sendDataCardWritePacketToServer()
+    {
+        PacketHandler.sendToServer(getPacket(PacketTypes.DATA_CARD_WRITE));
     }
 
     public static PacketCoFHBase getPacket(PacketTypes packetType)
@@ -118,19 +109,10 @@ public class GarbageEnergyPacket extends PacketCoFHBase
         }
     }
 
-    protected void handleSecurityUpdate(EntityPlayer player)
+    protected void handleDataCardWriteUpdate(EntityPlayer player)
     {
-        int[] coords = getCoords();
-        if (isValidPacketData(player, coords[0], coords[1], coords[2]) && player.openContainer instanceof ISecurable) {
-            ((ISecurable) player.openContainer).setAccess(ISecurable.AccessMode.values()[getByte()]);
-        }
-    }
-
-    protected void handleTabAugment(EntityPlayer player)
-    {
-        int[] coords = getCoords();
-        if (isValidPacketData(player, coords[0], coords[1], coords[2]) && player.openContainer instanceof IAugmentableContainer) {
-            ((IAugmentableContainer) player.openContainer).setAugmentLock(getBool());
+        if (player.openContainer instanceof IDataCardManageable) {
+            ((IDataCardManageable) player.openContainer).writeDataCard();
         }
     }
 }

@@ -146,6 +146,6 @@ public class BlockScanner extends BaseBlock
 
     public enum Types
     {
-        ITEM;
+        ITEM
     }
 }

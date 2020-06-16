@@ -10,6 +10,7 @@ import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.blocks.scanner.TileItemScanner;
 import net.jmorg.garbageenergy.common.gui.client.BaseGui;
 import net.jmorg.garbageenergy.common.gui.container.scanner.ItemScannerContainer;
+import net.jmorg.garbageenergy.network.GarbageEnergyPacket;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -82,10 +83,10 @@ public class ItemScannerGui extends BaseGui
     public void handleElementButtonClick(String buttonName, int mouseButton)
     {
         if (buttonName.equals("SaveResult")) {
-            tile.saveResult();
+            GarbageEnergyPacket.sendDataCardWritePacketToServer();
         }
         if (buttonName.equals("ResetResult")) {
-            tile.resetResult();
+            tile.resetResult(true);
         }
         playSound("random.click", 1.0F, 0.8F);
     }
@@ -105,7 +106,7 @@ public class ItemScannerGui extends BaseGui
     {
         super.updateElementInformation();
 
-        saveResultButton.setEnabled(tile.finished);
+        saveResultButton.setEnabled(tile.finished && tile.inventory[1] != null);
         resetButton.setEnabled(tile.finished);
         redstoneTab.setVisible(true);
         duration.setQuantity(tile.getScaledProgress(SPEED));
@@ -123,8 +124,8 @@ public class ItemScannerGui extends BaseGui
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanning") + "\n";
             scanningText += divider;
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.item") + ": " + itemName + "\n";
-            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.process") + ": " + progress + "%\n";
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.leftTime") + ": " + getLeftTime() + "\n";
+            scanningText += StringHelper.localize("info.GarbageEnergy.scanner.process") + ": " + progress + "%\n";
         } else if (tile.finished) {
             scanningText += StringHelper.localize("info.GarbageEnergy.scanner.scanned") + "\n";
             scanningText += divider;

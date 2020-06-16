@@ -7,7 +7,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.gui.client.scanner.ItemScannerGui;
 import net.jmorg.garbageenergy.common.gui.container.scanner.ItemScannerContainer;
-import net.jmorg.garbageenergy.common.items.ItemDataCard;
 import net.jmorg.garbageenergy.crafting.RecipeManager;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
@@ -88,21 +87,6 @@ public class TileItemScanner extends TileScanner
     }
 
     @Override
-    public void saveResult()
-    {
-        if (inventory[1] == null) return;
-
-        if (inventory[1].getItem() instanceof ItemDataCard) {
-            ItemDataCard dataCard = (ItemDataCard) inventory[1].getItem();
-            dataCard.setItemId(item[0]);
-            dataCard.setItemDisplayName(item[1]);
-            dataCard.setItemEnergyModifier(itemEnergyModifier);
-            dataCard.setSubscribed(true);
-            resetResult();
-        }
-    }
-
-    @Override
     protected boolean check()
     {
         return !finished && inventory[0] == null;
@@ -141,7 +125,7 @@ public class TileItemScanner extends TileScanner
     }
 
     @Override
-    public void resetResult()
+    public void resetResult(boolean send)
     {
         queue = new ArrayList<String>();
         itemEnergyModifier = 0.0F;
@@ -149,7 +133,7 @@ public class TileItemScanner extends TileScanner
         item[1] = "";
         progress = 0;
         progressMax = 0;
-        super.resetResult();
+        super.resetResult(send);
     }
 
     //
@@ -204,7 +188,7 @@ public class TileItemScanner extends TileScanner
         finished = nbt.getBoolean("Finished");
         item[0] = nbt.getString("ItemName");
         item[1] = nbt.getString("ItemDisplayName");
-        itemEnergyModifier = nbt.getFloat("EnergyModifier");
+        itemEnergyModifier = nbt.getFloat("ItemEnergyModifier");
         ecc = nbt.getInteger("EnergyMod");
         progress = nbt.getLong("Progress");
         progressMax = nbt.getLong("ProgressMax");
@@ -225,7 +209,7 @@ public class TileItemScanner extends TileScanner
         nbt.setBoolean("Finished", finished);
         nbt.setString("ItemName", item[0]);
         nbt.setString("ItemDisplayName", item[1]);
-        nbt.setFloat("EnergyModifier", itemEnergyModifier);
+        nbt.setFloat("ItemEnergyModifier", itemEnergyModifier);
         nbt.setInteger("EnergyMod", ecc);
         nbt.setLong("Progress", progress);
         nbt.setLong("ProgressMax", progressMax);

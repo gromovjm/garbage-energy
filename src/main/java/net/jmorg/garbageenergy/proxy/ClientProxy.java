@@ -18,7 +18,7 @@ public class ClientProxy extends CommonProxy
 
         if (ItemFuelManager.isBurnable(itemName)) {
             double burningTile = ItemFuelManager.getBurningTime(itemName);
-            event.toolTip.add(StringHelper.localize("tooltip.itemRgGenerationFromItem") + ": " + burningTile);
+            event.toolTip.add(StringHelper.localize("tooltip.itemRfGenerationFromItem") + ": " + burningTile);
         }
     }
 }

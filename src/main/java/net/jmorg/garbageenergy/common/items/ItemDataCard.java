@@ -1,52 +1,60 @@
 package net.jmorg.garbageenergy.common.items;
 
+import cofh.core.item.ItemBase;
+import cofh.lib.util.helpers.StringHelper;
+import net.jmorg.garbageenergy.GarbageEnergy;
+import net.jmorg.garbageenergy.utils.ItemDataCardManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class ItemDataCard extends BaseItem
+public class ItemDataCard extends ItemBase
 {
-    private boolean subscribed = false;
+    public static final int[] cardSizes = {1, 9, 15, 32};
 
-    public String itemId;
-
-    public String itemDisplayName;
-
-    public float itemEnergyModifier;
-
-    public String getName()
+    public ItemDataCard()
     {
-        return "data_card";
+        super(GarbageEnergy.MODID);
+        setCreativeTab(GarbageEnergy.garbageEnergyTab);
+        setUnlocalizedName("dataCard");
+        setHasSubtypes(true);
     }
 
-    public void setItemId(String itemId)
+    public void registerCards()
     {
-        this.itemId = itemId;
+        makeInstance(EnumRarity.common);
+        makeInstance(EnumRarity.uncommon);
+        makeInstance(EnumRarity.rare);
+        makeInstance(EnumRarity.epic);
     }
 
-    public void setItemDisplayName(String itemDisplayName)
+    private void makeInstance(EnumRarity enumRarity)
     {
-        this.itemDisplayName = itemDisplayName;
-    }
-
-    public void setItemEnergyModifier(float itemEnergyModifier)
-    {
-        this.itemEnergyModifier = itemEnergyModifier;
-    }
-
-    public void setSubscribed(boolean subscribed)
-    {
-        this.subscribed = subscribed;
+        addItem(enumRarity.ordinal(), enumRarity.rarityName + "Card", enumRarity.ordinal(), true);
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List information, boolean debug)
+    public boolean isFull3D()
     {
-        if (subscribed) {
-            information.add(itemDisplayName);
-            information.add(itemId);
-            information.add(String.valueOf(itemEnergyModifier));
+        return true;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean check)
+    {
+        list.add(String.format(StringHelper.getInfoText("item.GarbageEnergy.dataCard.info"),
+                ItemDataCardManager.getTotalStoredItemsCount(stack) + "/" + ItemDataCardManager.getMaxStoredItemsCount(stack)));
+
+        if (ItemDataCardManager.getTotalStoredItemsCount(stack) > 0) {
+            if (StringHelper.displayShiftForDetail && !StringHelper.isShiftKeyDown()) {
+                list.add(StringHelper.shiftForDetails());
+            }
+            if (!StringHelper.isShiftKeyDown()) {
+                return;
+            }
+            ItemDataCardManager.addItemsInformation(stack, list);
         }
     }
 }

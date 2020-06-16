@@ -3,7 +3,6 @@ package net.jmorg.garbageenergy;
 import cofh.core.CoFHProps;
 import cofh.core.network.PacketCoFHBase;
 import cofh.core.util.ConfigHandler;
-import cofh.core.util.FMLEventHandler;
 import cofh.mod.BaseMod;
 import cofh.mod.updater.UpdateManager;
 import cpw.mods.fml.common.Mod;
@@ -17,7 +16,7 @@ import net.jmorg.garbageenergy.common.blocks.generator.TileGeneratorBase;
 import net.jmorg.garbageenergy.common.blocks.scanner.BlockScanner;
 import net.jmorg.garbageenergy.common.gui.GuiHandler;
 import net.jmorg.garbageenergy.crafting.RecipeManager;
-import net.jmorg.garbageenergy.network.GarbageEnergyChannelRegistry;
+import net.jmorg.garbageenergy.network.FMLEventHandler;
 import net.jmorg.garbageenergy.network.GarbageEnergyPacket;
 import net.jmorg.garbageenergy.proxy.CommonProxy;
 import net.minecraft.creativetab.CreativeTabs;
@@ -80,9 +79,6 @@ public class GarbageEnergy extends BaseMod
         GarbageEnergyBlock.registerBlocks();
         GarbageEnergyItem.registerItems();
 
-        // Channels
-        GarbageEnergyChannelRegistry.initialize();
-
         // Gui
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
 
@@ -115,8 +111,6 @@ public class GarbageEnergy extends BaseMod
     @Mod.EventHandler
     public void serverStart(FMLServerAboutToStartEvent event)
     {
-        GarbageEnergyChannelRegistry.createServerRegistry();
-        GarbageEnergyChannelRegistry.createClientRegistry();
     }
 
     @Mod.EventHandler
@@ -139,14 +133,13 @@ public class GarbageEnergy extends BaseMod
         TileGeneratorBase.enableSecurity = payload.getBool();
 
         log.info("Receiving Server Configuration...");
-        GarbageEnergyChannelRegistry.createClientRegistry();
     }
 
     public PacketCoFHBase getConfigSync()
     {
         PacketCoFHBase payload = GarbageEnergyPacket.getPacket(GarbageEnergyPacket.PacketTypes.CONFIG_SYNC);
 
-        TileGeneratorBase.enableSecurity = payload.getBool();
+        payload.addBool(TileGeneratorBase.enableSecurity);
 
         return payload;
     }

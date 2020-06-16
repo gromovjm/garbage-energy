@@ -1,5 +1,10 @@
 # items
 item.GarbageEnergy.wrench.name=Wrench
+item.GarbageEnergy.dataCard.CommonCard.name=Disk
+item.GarbageEnergy.dataCard.UncommonCard.name=Uncommon disk
+item.GarbageEnergy.dataCard.RareCard.name=Rare disk
+item.GarbageEnergy.dataCard.EpicCard.name=Epick disk
+item.GarbageEnergy.dataCard.info=Stores scanning results for %s items.
 
 # blocks
 tile.GarbageEnergy.generator.itemRf.name=Item RF generator
@@ -29,7 +34,9 @@ info.GarbageEnergy.scanner.item=Item
 info.GarbageEnergy.scanner.energyModifier=Energy mod
 
 # Tooltips
-tooltip.itemRgGenerationFromItem=Energy producing modifier
+tooltip.itemRfGenerationFromItem=Energy producing modifier
+tooltip.dataCard.containInfoAbout=Contains information about:
+tooltip.dataCard.itemRfGenerationFromItem=x%s from %s
 
 # creativetabs
 itemGroup.garbageEnergy=Garbage energy

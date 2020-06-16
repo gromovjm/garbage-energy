@@ -2,16 +2,17 @@ package net.jmorg.garbageenergy.common.gui.container.scanner;
 
 import cofh.lib.gui.slot.ISlotValidator;
 import cofh.lib.gui.slot.SlotEnergy;
-import cofh.lib.gui.slot.SlotSpecificItem;
 import cofh.lib.gui.slot.SlotValidated;
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.jmorg.garbageenergy.GarbageEnergy;
+import cpw.mods.fml.relauncher.Side;
 import net.jmorg.garbageenergy.common.blocks.scanner.TileItemScanner;
 import net.jmorg.garbageenergy.common.gui.container.BaseContainer;
+import net.jmorg.garbageenergy.common.items.ItemDataCard;
+import net.jmorg.garbageenergy.utils.IDataCardManageable;
+import net.jmorg.garbageenergy.utils.ItemDataCardManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
-public class ItemScannerContainer extends BaseContainer implements ISlotValidator
+public class ItemScannerContainer extends BaseContainer implements ISlotValidator, IDataCardManageable
 {
     TileItemScanner itemScannerTile;
 
@@ -21,7 +22,14 @@ public class ItemScannerContainer extends BaseContainer implements ISlotValidato
 
         itemScannerTile = tile;
         addSlotToContainer(new SlotValidated(this, itemScannerTile, 0, 43, 38));
-        addSlotToContainer(new SlotSpecificItem(itemScannerTile, 1,188, 67, GameRegistry.findItemStack(GarbageEnergy.MODID, "data_card", 1)));
+        addSlotToContainer(new SlotValidated(new ISlotValidator()
+        {
+            @Override
+            public boolean isItemValid(ItemStack itemStack)
+            {
+                return itemStack.getItem() instanceof ItemDataCard;
+            }
+        }, itemScannerTile, 1, 188, 67));
         addSlotToContainer(new SlotEnergy(itemScannerTile, itemScannerTile.getChargeSlot(), 8, 67));
     }
 
@@ -41,5 +49,21 @@ public class ItemScannerContainer extends BaseContainer implements ISlotValidato
     protected int getPlayerInventoryVerticalOffset()
     {
         return 98;
+    }
+
+    @Override
+    public void writeDataCard()
+    {
+        ItemStack dataCard = itemScannerTile.getStackInSlot(1);
+        String itemId = itemScannerTile.item[0];
+        String itemDisplayName = itemScannerTile.item[1];
+        float itemEnergyModifier = itemScannerTile.itemEnergyModifier;
+
+        if (dataCard != null && itemScannerTile.finished
+                && (itemId != null || itemDisplayName != null || itemEnergyModifier > 0)
+                && ItemDataCardManager.saveData(dataCard, itemId, itemDisplayName, itemEnergyModifier)) {
+            itemScannerTile.resetResult(false);
+            itemScannerTile.sendUpdatePacket(Side.CLIENT);
+        }
     }
 }

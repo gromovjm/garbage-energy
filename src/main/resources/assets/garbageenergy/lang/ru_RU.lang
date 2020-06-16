@@ -1,5 +1,10 @@
 # items
 item.GarbageEnergy.wrench.name=Гаечный ключ
+item.GarbageEnergy.dataCard.CommonCard.name=Дискета
+item.GarbageEnergy.dataCard.UncommonCard.name=Необычная дискета
+item.GarbageEnergy.dataCard.RareCard.name=Редкая дискета
+item.GarbageEnergy.dataCard.EpicCard.name=Эпическая дискета
+item.GarbageEnergy.dataCard.info=Хранит результаты сканирования для %s предметов.
 
 # blocks
 tile.GarbageEnergy.generator.itemRf.name=Предметный RF генератор
@@ -29,7 +34,9 @@ info.GarbageEnergy.scanner.item=Предмет
 info.GarbageEnergy.scanner.energyModifier=Мод. енергии
 
 # Tooltips
-tooltip.itemRgGenerationFromItem=Модификатор производства энергии
+tooltip.itemRfGenerationFromItem=Модификатор производства энергии
+tooltip.dataCard.containInfoAbout=Содержит информацию про:
+tooltip.dataCard.itemRfGenerationFromItem=x%s с %s
 
 # creativetabs
-itemGroup.garbageEnergy=Мусорная энергия
+itemGroup.garbageEnergy=Garbage Energy
