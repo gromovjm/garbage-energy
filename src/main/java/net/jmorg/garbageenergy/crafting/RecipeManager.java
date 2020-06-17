@@ -76,7 +76,7 @@ public class RecipeManager
 
     public static String itemName(ItemStack itemStack)
     {
-        return itemStack.toString().replaceFirst("\\dx", "");
+        return itemStack.toString().replaceFirst("\\d*x", "");
     }
 
     public static boolean recipeIngredientsContain(String recipeName, ItemStack itemStack)

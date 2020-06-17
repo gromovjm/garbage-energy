@@ -12,13 +12,13 @@ tile.GarbageEnergy.scanner.item.name=Сканер предметов
 
 # CoFHCore GUI tabs
 info.tab.GarbageEnergy.generator.0=Используйте этот генератор чтобы производить RF энергию из ресурсов, которые Вам не нужны.
-info.tab.GarbageEnergy.generator.itemRf.0=Этот генератор производит RF из ненужных Вам предметов.
-info.tab.GarbageEnergy.generator.itemRf.1=Предметы, которые Вы можете сюда положить подписаны.
+info.tab.GarbageEnergy.generator.itemRf.0=Для производства RF необходимо вставить в генератор дискету с информацией об предмете из которого необходимо вырабатывать енергию.
+info.tab.GarbageEnergy.generator.itemRf.1=Другие предметы, о которых не содержит информации дискета, кроме тех что имеют собственный енерегический модификатор, нельзя будет положить в генератор.
 info.tab.GarbageEnergy.generator.itemRf.2=Не ложите сюда Ваши алмазы!
 
-info.tab.GarbageEnergy.scanner.item.0=Сканирует предметы или блоки и отображает значение Модификатора энергии для данного предмета в предметном генераторе.
+info.tab.GarbageEnergy.scanner.item.0=Сканирует предметы или блоки и отображает значение енергетического модификатора для данного предмета в предметном генераторе.
 info.tab.GarbageEnergy.scanner.item.1=Вы можете поместить карту в соотвествующий слот и после сканирования сохранить результат в неё.
-info.tab.GarbageEnergy.scanner.item.2=Записанная карта может быть помещена в генератор и вы сможете генерировать энергию с предметов которые записаны на неё.
+info.tab.GarbageEnergy.scanner.item.2=Записанная карта может быть помещена в генератор и вы сможете генерировать энергию с предметов информацию о которых она содержит.
 
 info.GarbageEnergy.generator.rfFromItem=RF с предмета
 info.GarbageEnergy.scanner.saveResult=Сохранить результат
@@ -34,9 +34,9 @@ info.GarbageEnergy.scanner.item=Предмет
 info.GarbageEnergy.scanner.energyModifier=Мод. енергии
 
 # Tooltips
-tooltip.itemRfGenerationFromItem=Модификатор производства энергии
+tooltip.EMC.unique=Собственный мод. енергии
+tooltip.EMC=x%s с %s
 tooltip.dataCard.containInfoAbout=Содержит информацию про:
-tooltip.dataCard.itemRfGenerationFromItem=x%s с %s
 
 # creativetabs
 itemGroup.garbageEnergy=Garbage Energy

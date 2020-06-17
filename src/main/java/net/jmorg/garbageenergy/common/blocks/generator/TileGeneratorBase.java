@@ -13,9 +13,10 @@ import cpw.mods.fml.relauncher.Side;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.blocks.TileReconfigurable;
 import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator.Types;
+import net.jmorg.garbageenergy.crafting.RecipeManager;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
+import net.jmorg.garbageenergy.utils.ItemDataCardManager;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
-import net.jmorg.garbageenergy.utils.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class TileGeneratorBase extends TileReconfigurable implements IEnergyInfo, IEnergyProvider, ISidedInventory
 {
@@ -66,9 +70,12 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
 
         // Configure fuels map.
         comment = "Indicate the objects that can be placed in the generator for their conversion into RF energy as\n" +
-                "the parameter name. Its value indicate the value of the coefficient of energy generation when burning\n" +
+                "the parameter name. You should provide this name. Its value indicate the value of the coefficient of energy generation when burning\n" +
                 "this item. At the same time, this parameter is equal to the length of the burning process,\n" +
-                "which will decrease by the value of AttenuateModifier.";
+                "which will decrease by the value of AttenuateModifier.\n" +
+                "\n" +
+                "Name example: I:<ItemUnlocalizedName>.<metadata>=<energyModifier>\n" +
+                "    I:ItemWheat.0=0.15";
         ConfigCategory configs = GarbageEnergy.config.getCategory("ItemRfFuels");
         ItemFuelManager.registerFuels(GarbageEnergy.config.getCategoryKeys("ItemRfFuels"), configs);
         configs.setComment(comment);
@@ -107,16 +114,27 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         return isActive ? 5 : 0;
     }
 
-    public static float getEnergyValue(ItemStack stack)
+    protected float getEnergyValue(ItemStack stack)
     {
         if (stack == null) {
             return 0F;
         }
 
-        String item = Utils.getItemUniqueId(stack.getItem());
-        if (ItemFuelManager.isBurnable(item)) {
-            return (float) ItemFuelManager.getBurningTime(item);
+        String itemId = RecipeManager.itemName(stack);
+
+        if (ItemFuelManager.isBurnable(itemId)) {
+            return (float) ItemFuelManager.getBurningTime(itemId);
         }
+
+        if (inventory[1] != null) {
+            List<HashMap<String, String>> items = ItemDataCardManager.getItems(inventory[1]);
+            for (HashMap<String, String> item : items) {
+                if (item.get("Id").equals(itemId)) {
+                    return Float.parseFloat(item.get("EnergyModifier"));
+                }
+            }
+        }
+
         return 0F;
     }
 

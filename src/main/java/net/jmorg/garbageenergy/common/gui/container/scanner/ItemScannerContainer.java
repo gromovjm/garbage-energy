@@ -6,7 +6,7 @@ import cofh.lib.gui.slot.SlotValidated;
 import cpw.mods.fml.relauncher.Side;
 import net.jmorg.garbageenergy.common.blocks.scanner.TileItemScanner;
 import net.jmorg.garbageenergy.common.gui.container.BaseContainer;
-import net.jmorg.garbageenergy.common.items.ItemDataCard;
+import net.jmorg.garbageenergy.common.gui.element.SlotDataCard;
 import net.jmorg.garbageenergy.utils.IDataCardManageable;
 import net.jmorg.garbageenergy.utils.ItemDataCardManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -22,14 +22,7 @@ public class ItemScannerContainer extends BaseContainer implements ISlotValidato
 
         itemScannerTile = tile;
         addSlotToContainer(new SlotValidated(this, itemScannerTile, 0, 43, 38));
-        addSlotToContainer(new SlotValidated(new ISlotValidator()
-        {
-            @Override
-            public boolean isItemValid(ItemStack itemStack)
-            {
-                return itemStack.getItem() instanceof ItemDataCard;
-            }
-        }, itemScannerTile, 1, 188, 67));
+        addSlotToContainer(new SlotDataCard(itemScannerTile, 1, 188, 67));
         addSlotToContainer(new SlotEnergy(itemScannerTile, itemScannerTile.getChargeSlot(), 8, 67));
     }
 

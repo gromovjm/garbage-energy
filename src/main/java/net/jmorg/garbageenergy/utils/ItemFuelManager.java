@@ -1,5 +1,6 @@
 package net.jmorg.garbageenergy.utils;
 
+import com.google.common.base.CaseFormat;
 import net.minecraftforge.common.config.ConfigCategory;
 
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ public class ItemFuelManager
         if (fuels.isEmpty()) return;
 
         for (String fuel : fuels) {
-            burnable.add(fuel.replace('.', ':'));
             burningTimes.add(configs.get(fuel).getDouble(0.1));
+            burnable.add(parseFuelName(fuel));
         }
     }
 
@@ -29,5 +30,10 @@ public class ItemFuelManager
     public static boolean isBurnable(String name)
     {
         return burnable.contains(name);
+    }
+
+    private static String parseFuelName(String fuel)
+    {
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fuel).replace('.', '@').replace('_', '.');
     }
 }

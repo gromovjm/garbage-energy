@@ -11,29 +11,14 @@ import net.minecraft.item.ItemStack;
 
 public class TileItemRFGenerator extends TileGeneratorBase
 {
-    private static final int NUM_CONFIG = 3;
-    private static final int[] SLOTS = new int[] {0};
-
     public TileItemRFGenerator()
     {
         super(BlockGenerator.Types.ITEM_RF);
-        inventory = new ItemStack[SLOTS.length];
+        inventory = new ItemStack[2];
     }
 
     public static void initialize()
     {
-        /*int type = BlockGenerator.Types.ITEM_RF.ordinal();
-
-        defaultSideConfig[type] = new SideConfig();
-        defaultSideConfig[type].numConfig = NUM_CONFIG;
-        defaultSideConfig[type].slotGroups = new int[][] { {}, { 0 }, { 1 } };
-        defaultSideConfig[type].allowInsertionSide = new boolean[] { false, true, false };
-        defaultSideConfig[type].allowExtractionSide = new boolean[] { false, false, false };
-        defaultSideConfig[type].allowInsertionSlot = new boolean[] { true, false };
-        defaultSideConfig[type].allowExtractionSlot = new boolean[] { false, false };
-        defaultSideConfig[type].sideTex = new int[] { 0, 1, 4, 7 };
-        defaultSideConfig[type].defaultSides = new byte[] { 1, 1, 2, 2, 2, 2 };*/
-
         GameRegistry.registerTileEntity(TileItemRFGenerator.class, GarbageEnergy.MODID + ".Generator.ItemRFGenerator");
     }
 
@@ -88,7 +73,7 @@ public class TileItemRFGenerator extends TileGeneratorBase
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-        return SLOTS;
+        return new int[] {0};
     }
 
     //
@@ -96,6 +81,6 @@ public class TileItemRFGenerator extends TileGeneratorBase
     @Override
     public int getNumConfig(int side)
     {
-        return NUM_CONFIG;
+        return 3;
     }
 }

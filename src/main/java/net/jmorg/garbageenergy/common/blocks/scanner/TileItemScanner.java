@@ -10,7 +10,6 @@ import net.jmorg.garbageenergy.common.gui.container.scanner.ItemScannerContainer
 import net.jmorg.garbageenergy.crafting.RecipeManager;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
-import net.jmorg.garbageenergy.utils.Utils;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -102,17 +101,18 @@ public class TileItemScanner extends TileScanner
 
     protected void scanItemStack(ItemStack itemStack)
     {
+        String itemId = RecipeManager.itemName(itemStack);
         if (isCraftable(itemStack)) {
-            List<ItemStack> ingredients = recipeManager.getRecipeIngredients(RecipeManager.itemName(itemStack));
+            List<ItemStack> ingredients = recipeManager.getRecipeIngredients(itemId);
             if (ingredientsCraftedFromItem(ingredients, itemStack)) {
-                queue.add(Utils.getItemUniqueId(itemStack.getItem()));
+                queue.add(itemId);
             } else {
                 for (ItemStack ingredient : ingredients) {
                     scanItemStack(ingredient);
                 }
             }
         } else {
-            queue.add(Utils.getItemUniqueId(itemStack.getItem()));
+            queue.add(itemId);
         }
     }
 

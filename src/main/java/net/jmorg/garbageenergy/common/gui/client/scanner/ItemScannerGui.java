@@ -13,6 +13,7 @@ import net.jmorg.garbageenergy.common.gui.container.scanner.ItemScannerContainer
 import net.jmorg.garbageenergy.network.GarbageEnergyPacket;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class ItemScannerGui extends BaseGui
@@ -41,6 +42,21 @@ public class ItemScannerGui extends BaseGui
         if (tile.enableSecurity() && tile.isSecured()) {
             this.myTutorial += StringHelper.localize("info.cofh.tutorial.tabSecurity") + "\n\n";
         }
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int i, int i1)
+    {
+        if (this.drawTitle & this.name != null) {
+            this.fontRendererObj.drawString(StringHelper.localize(this.name), this.getCenteredOffset(StringHelper.localize(this.name)), 6, 4210752);
+        }
+
+        if (this.drawInventory) {
+            this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 26, this.ySize - 96 + 3, 4210752);
+        }
+
+        this.drawElements(0.0F, true);
+        this.drawTabs(0.0F, true);
     }
 
     @Override

@@ -79,7 +79,7 @@ public class ItemDataCardManager
         list.add(StringHelper.getNoticeText("tooltip.dataCard.containInfoAbout"));
         List<HashMap<String, String>> items = ItemDataCardManager.getItems(dataCard);
         for (HashMap<String, String> item : items) {
-            list.add(String.format(StringHelper.localize("tooltip.dataCard.itemRfGenerationFromItem"), item.get("EnergyModifier"), item.get("DisplayName")));
+            list.add(String.format(StringHelper.localize("tooltip.EMC"), item.get("EnergyModifier"), item.get("DisplayName")));
         }
     }
 
