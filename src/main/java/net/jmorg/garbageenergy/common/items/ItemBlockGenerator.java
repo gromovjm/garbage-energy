@@ -40,14 +40,14 @@ public class ItemBlockGenerator extends ItemBlockBase
     @Override
     public void addInformation(ItemStack stack, EntityPlayer entityPlayer, List list, boolean check)
     {
-        SecurityHelper.addOwnerInformation(stack, list);
-        if (StringHelper.displayShiftForDetail && !StringHelper.isShiftKeyDown()) {
-            list.add(StringHelper.shiftForDetails());
-        }
-        if (!StringHelper.isShiftKeyDown()) {
-            return;
-        }
-        SecurityHelper.addAccessInformation(stack, list);
+//        SecurityHelper.addOwnerInformation(stack, list);
+//        if (StringHelper.displayShiftForDetail && !StringHelper.isShiftKeyDown()) {
+//            list.add(StringHelper.shiftForDetails());
+//        }
+//        if (!StringHelper.isShiftKeyDown()) {
+//            return;
+//        }
+//        SecurityHelper.addAccessInformation(stack, list);
 
 //        list.add(StringHelper.localize("info.thermalexpansion.dynamo.generate"));
 //        list.add(StringHelper.getInfoText("info.thermalexpansion.dynamo." + BlockDynamo.NAMES[ItemHelper.getItemDamage(stack)]));

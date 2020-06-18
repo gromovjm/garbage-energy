@@ -14,6 +14,11 @@ public class ItemDataCard extends ItemBase
 {
     public static final int[] cardSizes = {1, 9, 15, 32};
 
+    public ItemStack common;
+    public ItemStack uncommon;
+    public ItemStack rare;
+    public ItemStack epic;
+
     public ItemDataCard()
     {
         super(GarbageEnergy.MODID);
@@ -24,15 +29,15 @@ public class ItemDataCard extends ItemBase
 
     public void registerCards()
     {
-        makeInstance(EnumRarity.common);
-        makeInstance(EnumRarity.uncommon);
-        makeInstance(EnumRarity.rare);
-        makeInstance(EnumRarity.epic);
+        common = makeInstance(EnumRarity.common);
+        uncommon = makeInstance(EnumRarity.uncommon);
+        rare = makeInstance(EnumRarity.rare);
+        epic = makeInstance(EnumRarity.epic);
     }
 
-    private void makeInstance(EnumRarity enumRarity)
+    private ItemStack makeInstance(EnumRarity enumRarity)
     {
-        addItem(enumRarity.ordinal(), enumRarity.rarityName + "Card", enumRarity.ordinal(), true);
+        return addItem(enumRarity.ordinal(), enumRarity.rarityName + "Card", enumRarity.ordinal(), true);
     }
 
     @Override

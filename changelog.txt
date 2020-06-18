@@ -1,3 +1,12 @@
+Stable 1.7.10R1.2.0 Beta 3 release
+    <Added>:
+     * Recipe for scanner.
+     * Recipes for disks.
+
+    <Removed>:
+     * Tooltip information for generator.
+--------------------
+
 Stable 1.7.10R1.2.0 Beta 2 release
     <Implemented>:
      * Scanning and generating from items that unspecified in the config.

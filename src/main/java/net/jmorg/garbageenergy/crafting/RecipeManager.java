@@ -57,6 +57,7 @@ public class RecipeManager
             if (ingredient instanceof ItemStack) {
                 outputIngredients.add((ItemStack) ingredient);
             } else if (ingredient != null) {
+                if (((List) ingredient).isEmpty()) return;
                 outputIngredients.add((ItemStack) ((List) ingredient).get(0));
             }
         }

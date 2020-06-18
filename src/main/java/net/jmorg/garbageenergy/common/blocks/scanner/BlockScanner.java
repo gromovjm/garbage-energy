@@ -11,6 +11,8 @@ import net.jmorg.garbageenergy.common.items.ItemBlockGenerator;
 import net.jmorg.garbageenergy.common.items.ItemBlockScanner;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -85,6 +87,8 @@ public class BlockScanner extends BaseBlock
     @Override
     public boolean postInit()
     {
+        GameRegistry.addRecipe(item, "III", "IDI", "BRB", 'D', Items.diamond, 'R', Items.redstone, 'I', Items.iron_ingot, 'B', Blocks.iron_block);
+
         return false;
     }
 
