@@ -1,3 +1,15 @@
+Stable 1.7.10R1.2.0 Beta 2 release
+    <Implemented>:
+     * Scanning and generating from items that unspecified in the config.
+
+    <Added>:
+     * Item scanner.
+     * Disks for storing scanning results.
+
+    <Fixed>:
+     * Power generation process bug.
+--------------------
+
 Stable 1.7.10R1.1.0 Beta 1 release
     <Added>:
      * Recipe for Item RF generator.
