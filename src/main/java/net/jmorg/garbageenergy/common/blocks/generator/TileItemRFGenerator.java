@@ -31,10 +31,16 @@ public class TileItemRFGenerator extends TileGeneratorBase
     @Override
     protected void generate()
     {
+        fuelValue = getEnergyValue(inventory[0]);
+
+        if (fuelValue > 0 && progress == 0) {
+            progress = fuelValue;
+        }
+
         if (progress <= 0 && inventory[0] != null) {
             energyStorage.modifyEnergyStored(getEnergyOfItem());
             inventory[0] = ItemHelper.consumeItem(inventory[0]);
-            progress = fuelValue = getEnergyValue(inventory[0]);
+            progress = 0;
         } else {
             attenuate();
         }
@@ -43,15 +49,7 @@ public class TileItemRFGenerator extends TileGeneratorBase
     @Override
     public int getScaledDuration(int scale)
     {
-        fuelValue = getEnergyValue(inventory[0]);
-        if (fuelValue <= 0) {
-            return 0;
-        }
-        if (progress <= 0) {
-            progress = fuelValue;
-        }
-
-        return MathHelper.round(progress * scale / fuelValue);
+        return fuelValue > 0 ? MathHelper.round(progress * scale / fuelValue) : 0;
     }
 
     //

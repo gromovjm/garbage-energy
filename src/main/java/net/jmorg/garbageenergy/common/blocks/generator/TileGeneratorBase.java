@@ -185,10 +185,6 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     {
         if (timeCheck() && progress > 0) {
             progress -= attenuateModifier[getType()];
-
-            if (progress < 0) {
-                progress = 0;
-            }
         }
     }
 
@@ -426,7 +422,8 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         super.readFromNBT(nbt);
 
         energyStorage.readFromNBT(nbt);
-        progress = nbt.getInteger("Fuel");
+        progress = nbt.getFloat("Progress");
+        fuelValue = nbt.getFloat("FuelValue");
     }
 
     @Override
@@ -435,7 +432,8 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         super.writeToNBT(nbt);
 
         energyStorage.writeToNBT(nbt);
-        nbt.setFloat("Fuel", progress);
+        nbt.setFloat("Progress", progress);
+        nbt.setFloat("FuelValue", fuelValue);
     }
 
     //
@@ -448,6 +446,7 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         payload.addInt(energyStorage.getMaxEnergyStored());
         payload.addInt(energyStorage.getEnergyStored());
         payload.addFloat(progress);
+        payload.addFloat(fuelValue);
 
         return payload;
     }
@@ -460,5 +459,6 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         energyStorage.setCapacity(payload.getInt());
         energyStorage.setEnergyStored(payload.getInt());
         progress = payload.getFloat();
+        fuelValue = payload.getFloat();
     }
 }
