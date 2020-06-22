@@ -3,6 +3,7 @@ package net.jmorg.garbageenergy.network;
 import cofh.api.tileentity.IRedstoneControl;
 import cofh.core.network.PacketCoFHBase;
 import cofh.core.network.PacketHandler;
+import cofh.lib.gui.container.IAugmentableContainer;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.utils.IDataCardManageable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +19,7 @@ public class GarbageEnergyPacket extends PacketCoFHBase
 
     public enum PacketTypes
     {
-        RS_POWER_UPDATE, RS_CONFIG_UPDATE, CONFIG_SYNC, DATA_CARD_WRITE
+        RS_POWER_UPDATE, RS_CONFIG_UPDATE, CONFIG_SYNC, TAB_AUGMENT, DATA_CARD_WRITE
     }
 
     public enum PacketID
@@ -38,6 +39,11 @@ public class GarbageEnergyPacket extends PacketCoFHBase
                     return;
                 case RS_CONFIG_UPDATE:
                     handleRsConfigUpdate(player);
+                    return;
+                case TAB_AUGMENT:
+                    if (player.openContainer instanceof IAugmentableContainer) {
+                        ((IAugmentableContainer) player.openContainer).setAugmentLock(getBool());
+                    }
                     return;
                 case DATA_CARD_WRITE:
                     handleDataCardWriteUpdate(player);
@@ -67,6 +73,11 @@ public class GarbageEnergyPacket extends PacketCoFHBase
     public static void sendConfigSyncPacketToClient(EntityPlayer player)
     {
         PacketHandler.sendTo(GarbageEnergy.instance.getConfigSync(), player);
+    }
+
+    public static void sendTabAugmentPacketToServer(boolean lock)
+    {
+        PacketHandler.sendToServer(getPacket(PacketTypes.TAB_AUGMENT).addBool(lock));
     }
 
     public static void sendDataCardWritePacketToServer()

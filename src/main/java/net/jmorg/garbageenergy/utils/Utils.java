@@ -1,5 +1,6 @@
 package net.jmorg.garbageenergy.utils;
 
+import cofh.api.item.IAugmentItem;
 import cofh.api.item.IToolHammer;
 import cofh.api.transport.IItemDuct;
 import cofh.lib.util.helpers.BlockHelper;
@@ -10,15 +11,16 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 public class Utils
 {
+    public static boolean isAugmentItem(ItemStack container)
+    {
+        return container != null && container.getItem() instanceof IAugmentItem;
+    }
+
     public static boolean isHoldingUsableWrench(EntityPlayer player, int x, int y, int z)
     {
         Item equipped = player.getCurrentEquippedItem() != null ? player.getCurrentEquippedItem().getItem() : null;

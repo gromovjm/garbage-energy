@@ -143,7 +143,8 @@ public abstract class TileRSControl extends TileInventory implements IRedstoneCo
         return payload;
     }
 
-    /* ITilePacketHandler */
+    //
+    // ITilePacketHandler
     @Override
     public void handleTilePacket(PacketCoFHBase payload, boolean isServer)
     {

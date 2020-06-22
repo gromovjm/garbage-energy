@@ -11,9 +11,9 @@ import cofh.lib.util.TimeTracker;
 import cofh.lib.util.helpers.*;
 import cpw.mods.fml.relauncher.Side;
 import net.jmorg.garbageenergy.GarbageEnergy;
-import net.jmorg.garbageenergy.common.blocks.TileReconfigurable;
+import net.jmorg.garbageenergy.common.blocks.TileAugmentable;
 import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator.Types;
-import net.jmorg.garbageenergy.crafting.RecipeManager;
+import net.jmorg.garbageenergy.utils.AugmentManager;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,15 +24,10 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.HashMap;
-import java.util.List;
-
-public abstract class TileGeneratorBase extends TileReconfigurable implements IEnergyInfo, IEnergyProvider, ISidedInventory
+public abstract class TileGeneratorBase extends TileAugmentable implements IEnergyInfo, IEnergyProvider, ISidedInventory
 {
     protected final byte type;
 
-    /*protected static final SideConfig[] defaultSideConfig = new SideConfig[BlockGenerator.Types.values().length];
-    protected SideConfig sideConfig;*/
     public static boolean enableSecurity = true;
 
     protected TimeTracker tracker = new TimeTracker();
@@ -57,8 +52,7 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         energyStorage = new EnergyStorage(config.maxEnergy, config.maxPower * 2);
         energyModifier = (int) (attenuateModifier[getType()] * energyAmplifier[getType()] * 200);
         facing = (byte) ForgeDirection.NORTH.ordinal();
-        /*sideConfig = defaultSideConfig[getType()];
-        setDefaultSides();*/
+        augmentManager = new AugmentManager(this, 3);
     }
 
     public static void configure()

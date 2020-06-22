@@ -30,7 +30,8 @@ public abstract class TileReconfigurable extends TileRSControl implements IRecon
         sideCache = getDefaultSides();
     }
 
-    /* GUI METHODS */
+    //
+    // GUI methods.
     public final boolean hasSide(int side)
     {
         for (int i = 0; i < 6; i++) {
@@ -41,7 +42,8 @@ public abstract class TileReconfigurable extends TileRSControl implements IRecon
         return false;
     }
 
-    /* NBT METHODS */
+    //
+    // NBT methods.
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {

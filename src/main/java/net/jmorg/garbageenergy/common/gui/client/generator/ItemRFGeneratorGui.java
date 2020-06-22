@@ -1,5 +1,6 @@
 package net.jmorg.garbageenergy.common.gui.client.generator;
 
+import cofh.core.gui.element.TabAugment;
 import cofh.lib.gui.element.ElementDualScaled;
 import cofh.lib.gui.element.ElementEnergyStored;
 import cofh.lib.util.helpers.StringHelper;
@@ -49,6 +50,8 @@ public class ItemRFGeneratorGui extends BaseGui
             addTab(new TabGeneratorEnergy(this, tile, true));
         }
 
+        addTab(new TabAugment(this, (ItemRFGeneratorContainer) inventorySlots));
+
         initCommonTabs();
     }
 
@@ -67,7 +70,7 @@ public class ItemRFGeneratorGui extends BaseGui
     {
         super.updateElementInformation();
 
-        redstoneTab.setVisible(true);
+        redstoneTab.setVisible(tile.augmentRedstoneControl);
         duration.setQuantity(tile.getScaledDuration(SPEED));
     }
 }
