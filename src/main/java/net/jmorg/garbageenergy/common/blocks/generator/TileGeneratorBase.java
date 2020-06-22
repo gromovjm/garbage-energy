@@ -15,7 +15,6 @@ import net.jmorg.garbageenergy.common.blocks.TileReconfigurable;
 import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator.Types;
 import net.jmorg.garbageenergy.crafting.RecipeManager;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
-import net.jmorg.garbageenergy.utils.ItemDataCardManager;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -114,30 +113,6 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
         return isActive ? 5 : 0;
     }
 
-    protected float getEnergyValue(ItemStack stack)
-    {
-        if (stack == null) {
-            return 0F;
-        }
-
-        String itemId = RecipeManager.itemName(stack);
-
-        if (ItemFuelManager.isBurnable(itemId)) {
-            return (float) ItemFuelManager.getBurningTime(itemId);
-        }
-
-        if (inventory[1] != null) {
-            List<HashMap<String, String>> items = ItemDataCardManager.getItems(inventory[1]);
-            for (HashMap<String, String> item : items) {
-                if (item.get("Id").equals(itemId)) {
-                    return Float.parseFloat(item.get("EnergyModifier"));
-                }
-            }
-        }
-
-        return 0F;
-    }
-
     protected int calcEnergy()
     {
         int energy = 0;
@@ -185,6 +160,10 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     {
         if (timeCheck() && progress > 0) {
             progress -= attenuateModifier[getType()];
+        }
+
+        if (progress == 0) {
+            progress = -1e10F;
         }
     }
 
@@ -235,6 +214,8 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
             } else {
                 isActive = false;
                 wasActive = true;
+                fuelValue = 0F;
+                progress = 0F;
                 tracker.markTime(worldObj);
             }
         } else if (redstoneControlOrDisable() && canGenerate()) {
@@ -360,13 +341,6 @@ public abstract class TileGeneratorBase extends TileReconfigurable implements IE
     public boolean canInsertItem(int slot, ItemStack stack, int side)
     {
         return side != facing && isItemValidForSlot(slot, stack);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-        if (slot > inventory.length) return false;
-        return getEnergyValue(stack) > 0;
     }
 
     @Override
