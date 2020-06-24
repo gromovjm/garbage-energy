@@ -45,7 +45,36 @@ public class AugmentManager
         ItemStack augmentSlot = augments[slot];
         IAugmentItem augmentItem = (IAugmentItem) augments[slot].getItem();
 
-        return augmentable.installAugment(augmentItem, augmentSlot);
+        return augmentable.installAugment(augmentItem, augmentSlot, slot);
+    }
+
+    public boolean hasAugment(String type, int level)
+    {
+        for (ItemStack augment : augments) {
+            if (Utils.isAugmentItem(augment) && ((IAugmentItem) augment.getItem()).getAugmentLevel(augment, type) == level) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasDuplicateAugment(String type, int level, int slot)
+    {
+        for (int i = 0; i < augments.length; i++) {
+            if (i != slot && Utils.isAugmentItem(augments[i]) && ((IAugmentItem) augments[i].getItem()).getAugmentLevel(augments[i], type) == level) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAugmentChain(String type, int level)
+    {
+        boolean preReq = true;
+        for (int i = 1; i < level; i++) {
+            preReq = preReq && hasAugment(type, i);
+        }
+        return preReq;
     }
 
     public SlotAugment[] getSlots()
@@ -88,5 +117,16 @@ public class AugmentManager
             }
         }
         nbt.setTag("Augments", list);
+    }
+
+    public static class Augments
+    {
+        public static final int NUM_ENERGY_AMPLIFIER = 3;
+        public static final String ENERGY_AMPLIFIER_NAME = "energyAmplifier";
+        public static final int[] ENERGY_AMPLIFIER = {1, 2, 3, 5};
+
+        public static final int NUM_ATTENUATE_AMPLIFIER = 3;
+        public static final String ATTENUATE_AMPLIFIER_NAME = "attenuateModifier";
+        public static final float[] ATTENUATE_AMPLIFIER = {0.01F, 0.02F, 0.035F, 0.05F};
     }
 }

@@ -2,6 +2,7 @@ package net.jmorg.garbageenergy.common;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.jmorg.garbageenergy.GarbageEnergy;
+import net.jmorg.garbageenergy.common.items.ItemAugment;
 import net.jmorg.garbageenergy.common.items.ItemDataCard;
 import net.jmorg.garbageenergy.common.items.tool.Wrench;
 import net.minecraft.init.Items;
@@ -10,13 +11,15 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class GarbageEnergyItem
 {
-    public static final Item wrench = new Wrench();
+    public static final ItemAugment augment = new ItemAugment();
     public static final ItemDataCard dataCard = new ItemDataCard();
+    public static final Item wrench = new Wrench();
 
     public static void registerItems()
     {
-        GameRegistry.registerItem(wrench, "wrench");
+        augment.registerAugments();
         dataCard.registerCards();
+        GameRegistry.registerItem(wrench, "wrench");
 
         GarbageEnergy.log.info(GarbageEnergy.MODNAME + ": Items are registered.");
     }

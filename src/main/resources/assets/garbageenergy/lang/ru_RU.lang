@@ -6,6 +6,15 @@ item.GarbageEnergy.dataCard.RareCard.name=Редкая дискета
 item.GarbageEnergy.dataCard.EpicCard.name=Эпическая дискета
 item.GarbageEnergy.dataCard.info=Хранит результаты сканирования для %s предметов.
 
+# augments
+item.GarbageEnergy.augment.energyAmplifier1.name=Элементарный заряд
+item.GarbageEnergy.augment.energyAmplifier2.name=Совокупный заряд
+item.GarbageEnergy.augment.energyAmplifier3.name=Высоконакопленный заряд
+
+item.GarbageEnergy.augment.attenuateModifier1.name=Разрушитель пространства
+item.GarbageEnergy.augment.attenuateModifier2.name=Пространственно-временной разрушитель
+item.GarbageEnergy.augment.attenuateModifier3.name=Усиленный разрушитель времени
+
 # blocks
 tile.GarbageEnergy.generator.itemRf.name=Предметный RF генератор
 tile.GarbageEnergy.scanner.item.name=Сканер предметов
@@ -19,6 +28,16 @@ info.tab.GarbageEnergy.generator.itemRf.2=Не ложите сюда Ваши а
 info.tab.GarbageEnergy.scanner.item.0=Сканирует предметы или блоки и отображает значение енергетического модификатора для данного предмета в предметном генераторе.
 info.tab.GarbageEnergy.scanner.item.1=Вы можете поместить карту в соотвествующий слот и после сканирования сохранить результат в неё.
 info.tab.GarbageEnergy.scanner.item.2=Записанная карта может быть помещена в генератор и вы сможете генерировать энергию с предметов информацию о которых она содержит.
+
+info.GarbageEnergy.augment=Расширение
+info.GarbageEnergy.augment.levels.0=Требуется, чтобы предыдущие уровни были установлены.
+info.GarbageEnergy.augment.levels.1=Используется высочайший уровень расширения.
+
+info.GarbageEnergy.augment.energyAmplifier=Предметный RF генератор: Усилитель производства энергии
+info.GarbageEnergy.augment.energyAmplifier.info=x%s Выход энергии
+
+info.GarbageEnergy.augment.attenuateModifier=Предметный RF генератор: Уменьшает время горения
+info.GarbageEnergy.augment.attenuateModifier.info=-%s за тик
 
 info.GarbageEnergy.generator.rfFromItem=RF с предмета
 info.GarbageEnergy.scanner.saveResult=Сохранить результат

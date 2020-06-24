@@ -4,6 +4,7 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cofh.api.energy.IEnergyStorage;
+import cofh.api.item.IAugmentItem;
 import cofh.api.tileentity.IEnergyInfo;
 import cofh.core.CoFHProps;
 import cofh.core.network.PacketCoFHBase;
@@ -14,6 +15,7 @@ import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.blocks.TileAugmentable;
 import net.jmorg.garbageenergy.common.blocks.generator.BlockGenerator.Types;
 import net.jmorg.garbageenergy.utils.AugmentManager;
+import net.jmorg.garbageenergy.utils.AugmentManager.Augments;
 import net.jmorg.garbageenergy.utils.EnergyConfig;
 import net.jmorg.garbageenergy.utils.ItemFuelManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,12 +39,17 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
     IEnergyReceiver energyReceiver = null;
     static float[] attenuateModifier = new float[BlockGenerator.Types.values().length];
     static int[] energyAmplifier = new int[BlockGenerator.Types.values().length];
-    protected int energyModifier;
     float progress = 0F;
     float fuelValue;
 
     boolean cached = false;
     boolean wasActive = false;
+
+    // Augments
+    public boolean augmentAttenuateModifier = false;
+    public float augmentAttenuateModifierValue = 0.01F;
+    public boolean augmentEnergyAmplifier = false;
+    public int augmentEnergyAmplifierValue = 1;
 
     public TileGeneratorBase(Types type)
     {
@@ -50,7 +57,6 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
 
         config = defaultEnergyConfig[getType()];
         energyStorage = new EnergyStorage(config.maxEnergy, config.maxPower * 2);
-        energyModifier = (int) (attenuateModifier[getType()] * energyAmplifier[getType()] * 200);
         facing = (byte) ForgeDirection.NORTH.ordinal();
         augmentManager = new AugmentManager(this, 3);
     }
@@ -82,7 +88,7 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
             defaultEnergyConfig[i].setParamsPower(maxPower);
 
             comment = "Reduces process time.";
-            attenuateModifier[i] = (float) GarbageEnergy.config.get(generatorName, "AttenuateModifier", 0.005F, comment);
+            attenuateModifier[i] = (float) GarbageEnergy.config.get(generatorName, "AttenuateModifier", 0.01F, comment);
             comment = "Increases output energy.";
             energyAmplifier[i] = GarbageEnergy.config.get(generatorName, "EnergyAmplifier", 1, comment);
         }
@@ -124,6 +130,12 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
         return (int) (energy * fuelValue);
     }
 
+    protected int getEnergyModifier()
+    {
+        int modifier = (int) (attenuateModifier[getType()] * energyAmplifier[getType()] * augmentEnergyAmplifierValue * 100);
+        return modifier > 0 ? modifier : 1;
+    }
+
     public IEnergyStorage getEnergyStorage()
     {
         return energyStorage;
@@ -152,8 +164,13 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
 
     protected void attenuate()
     {
+        float modifier = attenuateModifier[getType()];
+        if (augmentAttenuateModifier) {
+            modifier = modifier + augmentAttenuateModifierValue;
+        }
+
         if (timeCheck() && progress > 0) {
-            progress -= attenuateModifier[getType()];
+            progress -= modifier;
         }
 
         if (progress == 0) {
@@ -256,12 +273,61 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
     }
 
     //
+    // TileAugmentable
+    @Override
+    public boolean installAugment(IAugmentItem augment, ItemStack itemStack, int slot)
+    {
+        boolean installed = super.installAugment(augment, itemStack, slot);
+        int energyAmplifierAugmentLevel = augment.getAugmentLevel(itemStack, Augments.ENERGY_AMPLIFIER_NAME);
+        int attenuateAmplifierAugmentLevel = augment.getAugmentLevel(itemStack, Augments.ATTENUATE_AMPLIFIER_NAME);
+
+        if (energyAmplifierAugmentLevel > 0) {
+            if (augmentManager.hasDuplicateAugment(Augments.ENERGY_AMPLIFIER_NAME, energyAmplifierAugmentLevel, slot)) {
+                return false;
+            }
+            if (augmentManager.hasAugmentChain(Augments.ENERGY_AMPLIFIER_NAME, energyAmplifierAugmentLevel)) {
+                augmentEnergyAmplifierValue = Augments.ENERGY_AMPLIFIER[energyAmplifierAugmentLevel];
+                installed = true;
+            } else {
+                return false;
+            }
+            augmentEnergyAmplifier = installed;
+        }
+
+        if (attenuateAmplifierAugmentLevel > 0) {
+            if (augmentManager.hasDuplicateAugment(Augments.ATTENUATE_AMPLIFIER_NAME, attenuateAmplifierAugmentLevel, slot)) {
+                return false;
+            }
+            if (augmentManager.hasAugmentChain(Augments.ATTENUATE_AMPLIFIER_NAME, attenuateAmplifierAugmentLevel)) {
+                augmentAttenuateModifierValue = Augments.ATTENUATE_AMPLIFIER[attenuateAmplifierAugmentLevel];
+                installed = true;
+            } else {
+                return false;
+            }
+            augmentAttenuateModifier = installed;
+        }
+
+        return installed;
+    }
+
+    @Override
+    public void resetAugments()
+    {
+        super.resetAugments();
+
+        augmentAttenuateModifierValue = 0.01F;
+        augmentAttenuateModifier = false;
+        augmentEnergyAmplifierValue = 1;
+        augmentEnergyAmplifier = false;
+    }
+
+    //
     // IEnergyProvider
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
     {
         if (canConnectEnergy(from)) {
-            return energyStorage.extractEnergy(Math.min(config.maxPower * energyModifier, maxExtract), simulate);
+            return energyStorage.extractEnergy(Math.min(config.maxPower * getEnergyModifier(), maxExtract), simulate);
         }
         return 0;
     }
@@ -288,7 +354,7 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
 
     protected int getEnergyOfItem()
     {
-        return isActive ? MathHelper.clamp(calcEnergy() * energyModifier, config.minPower, config.maxPower) : 0;
+        return isActive ? MathHelper.clamp(calcEnergy() * getEnergyModifier(), config.minPower, config.maxPower) : 0;
     }
 
     //

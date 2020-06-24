@@ -34,7 +34,7 @@ public abstract class TileAugmentable extends TileReconfigurable implements IAug
         }
     }
 
-    public boolean installAugment(IAugmentItem augment, ItemStack itemStack)
+    public boolean installAugment(IAugmentItem augment, ItemStack itemStack, int slot)
     {
         boolean installed = false;
 

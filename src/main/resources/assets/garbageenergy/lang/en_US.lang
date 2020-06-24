@@ -6,6 +6,15 @@ item.GarbageEnergy.dataCard.RareCard.name=Rare disk
 item.GarbageEnergy.dataCard.EpicCard.name=Epick disk
 item.GarbageEnergy.dataCard.info=Stores scanning results for %s items.
 
+# augments
+item.GarbageEnergy.augment.energyAmplifier1.name=Elementary charge
+item.GarbageEnergy.augment.energyAmplifier2.name=Cumulative charge
+item.GarbageEnergy.augment.energyAmplifier3.name=Heavy cumulative charge
+
+item.GarbageEnergy.augment.attenuateModifier1.name=Space destroyer
+item.GarbageEnergy.augment.attenuateModifier2.name=Space-time destroyer
+item.GarbageEnergy.augment.attenuateModifier3.name=Heavy time destroyer
+
 # blocks
 tile.GarbageEnergy.generator.itemRf.name=Item RF generator
 tile.GarbageEnergy.scanner.item.name=Item scanner
@@ -19,6 +28,16 @@ info.tab.GarbageEnergy.generator.itemRf.2=Do not put your diamonds to it!
 info.tab.GarbageEnergy.scanner.item.0=Scans items or blocks and shows energy modifier for it for Item RF generator.
 info.tab.GarbageEnergy.scanner.item.1=You can put card to appropriate slot and after scanning save result to it.
 info.tab.GarbageEnergy.scanner.item.2=The recorded card can be placed in the generator and you can generate energy from the objects information about which it contains.
+
+info.GarbageEnergy.augment=Augment
+info.GarbageEnergy.augment.levels.0=Requires previous levels to be installed.
+info.GarbageEnergy.augment.levels.1=Highest Level Augment is used.
+
+info.GarbageEnergy.augment.energyAmplifier=Item RF generator: Energy output amplifier
+info.GarbageEnergy.augment.energyAmplifier.info=x%s Energy output
+
+info.GarbageEnergy.augment.attenuateModifier=Item RF generator: Attunate process time
+info.GarbageEnergy.augment.attenuateModifier.info=-%s per tick
 
 info.GarbageEnergy.generator.rfFromItem=RF * item
 info.GarbageEnergy.scanner.saveResult=Save result
