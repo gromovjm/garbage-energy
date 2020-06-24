@@ -47,7 +47,7 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
 
     // Augments
     public boolean augmentAttenuateModifier = false;
-    public float augmentAttenuateModifierValue = 0.01F;
+    public float augmentAttenuateModifierValue = 0F;
     public boolean augmentEnergyAmplifier = false;
     public int augmentEnergyAmplifierValue = 1;
 
@@ -58,7 +58,7 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
         config = defaultEnergyConfig[getType()];
         energyStorage = new EnergyStorage(config.maxEnergy, config.maxPower * 2);
         facing = (byte) ForgeDirection.NORTH.ordinal();
-        augmentManager = new AugmentManager(this, 3);
+        augmentManager = new AugmentManager(this, 4);
     }
 
     public static void configure()
@@ -266,7 +266,7 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
     {
         boolean installed = super.installAugment(augment, itemStack, slot);
         int energyAmplifierAugmentLevel = augment.getAugmentLevel(itemStack, Augments.ENERGY_AMPLIFIER_NAME);
-        int attenuateAmplifierAugmentLevel = augment.getAugmentLevel(itemStack, Augments.ATTENUATE_AMPLIFIER_NAME);
+        int attenuateAmplifierAugmentLevel = augment.getAugmentLevel(itemStack, Augments.ATTENUATE_MODIFIER_NAME);
 
         if (energyAmplifierAugmentLevel > 0) {
             if (augmentManager.hasDuplicateAugment(Augments.ENERGY_AMPLIFIER_NAME, energyAmplifierAugmentLevel, slot)) {
@@ -282,11 +282,12 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
         }
 
         if (attenuateAmplifierAugmentLevel > 0) {
-            if (augmentManager.hasDuplicateAugment(Augments.ATTENUATE_AMPLIFIER_NAME, attenuateAmplifierAugmentLevel, slot)) {
+            if (augmentManager.hasDuplicateAugment(Augments.ATTENUATE_MODIFIER_NAME, attenuateAmplifierAugmentLevel, slot)) {
                 return false;
             }
-            if (augmentManager.hasAugmentChain(Augments.ATTENUATE_AMPLIFIER_NAME, attenuateAmplifierAugmentLevel)) {
-                augmentAttenuateModifierValue = Augments.ATTENUATE_AMPLIFIER[attenuateAmplifierAugmentLevel];
+            if (augmentManager.hasAugmentChain(Augments.ATTENUATE_MODIFIER_NAME, attenuateAmplifierAugmentLevel)) {
+                int percent = Augments.ATTENUATE_MODIFIER[attenuateAmplifierAugmentLevel];
+                augmentAttenuateModifierValue = (attenuateModifier[getType()] * percent / 100);
                 installed = true;
             } else {
                 return false;
@@ -302,7 +303,7 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
     {
         super.resetAugments();
 
-        augmentAttenuateModifierValue = 0.01F;
+        augmentAttenuateModifierValue = 0F;
         augmentAttenuateModifier = false;
         augmentEnergyAmplifierValue = 1;
         augmentEnergyAmplifier = false;

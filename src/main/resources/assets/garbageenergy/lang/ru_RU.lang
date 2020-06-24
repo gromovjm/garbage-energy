@@ -37,7 +37,7 @@ info.GarbageEnergy.augment.energyAmplifier=Предметный RF генера�
 info.GarbageEnergy.augment.energyAmplifier.info=x%s Выход энергии
 
 info.GarbageEnergy.augment.attenuateModifier=Предметный RF генератор: Уменьшает время горения
-info.GarbageEnergy.augment.attenuateModifier.info=-%s за тик
+info.GarbageEnergy.augment.attenuateModifier.info=-%s%% за тик
 
 info.GarbageEnergy.generator.rfFromItem=RF с предмета
 info.GarbageEnergy.scanner.saveResult=Сохранить результат

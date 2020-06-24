@@ -29,8 +29,8 @@ public class ItemAugment extends ItemBase implements IAugmentItem
     public void registerAugments()
     {
         // Register attenuate amplifier augment
-        for (int i = 0; i < Augments.NUM_ATTENUATE_AMPLIFIER; i++) {
-            addItem(48 + i, Augments.ATTENUATE_AMPLIFIER_NAME, 1 + i, 0);
+        for (int i = 0; i < Augments.NUM_ATTENUATE_MODIFIER; i++) {
+            addItem(48 + i, Augments.ATTENUATE_MODIFIER_NAME, 1 + i, 0);
         }
 
         // Register energy amplifier augment
@@ -76,8 +76,8 @@ public class ItemAugment extends ItemBase implements IAugmentItem
         if (type.equals(Augments.ENERGY_AMPLIFIER_NAME)) {
             list.add(StringHelper.BRIGHT_GREEN + String.format(info, Augments.ENERGY_AMPLIFIER[level]) + StringHelper.END);
         }
-        if (type.equals(Augments.ATTENUATE_AMPLIFIER_NAME)) {
-            list.add(StringHelper.BRIGHT_GREEN + String.format(info, Augments.ATTENUATE_AMPLIFIER[level]) + StringHelper.END);
+        if (type.equals(Augments.ATTENUATE_MODIFIER_NAME)) {
+            list.add(StringHelper.BRIGHT_GREEN + String.format(info, Augments.ATTENUATE_MODIFIER[level]) + StringHelper.END);
         }
 
         if (level > 1 && augmentChain) {

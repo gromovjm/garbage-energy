@@ -81,7 +81,11 @@ public class TileItemRFGenerator extends TileGeneratorBase
     @Override
     public int getScaledDuration(int scale)
     {
-        return fuelValue > 0 && progress > 0 ? MathHelper.round(progress * scale / fuelValue) : 0;
+        if (fuelValue <= 0 && progress <= 0) {
+            return 0;
+        }
+
+        return Math.max(MathHelper.round(progress * scale / fuelValue), 4);
     }
 
     //
@@ -103,7 +107,7 @@ public class TileItemRFGenerator extends TileGeneratorBase
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-        return new int[] {0};
+        return new int[]{0};
     }
 
     @Override

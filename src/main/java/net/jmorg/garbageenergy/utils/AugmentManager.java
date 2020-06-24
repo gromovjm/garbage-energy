@@ -125,8 +125,8 @@ public class AugmentManager
         public static final String ENERGY_AMPLIFIER_NAME = "energyAmplifier";
         public static final int[] ENERGY_AMPLIFIER = {1, 2, 3, 5};
 
-        public static final int NUM_ATTENUATE_AMPLIFIER = 3;
-        public static final String ATTENUATE_AMPLIFIER_NAME = "attenuateModifier";
-        public static final float[] ATTENUATE_AMPLIFIER = {0.01F, 0.02F, 0.035F, 0.05F};
+        public static final int NUM_ATTENUATE_MODIFIER = 3;
+        public static final String ATTENUATE_MODIFIER_NAME = "attenuateModifier";
+        public static final int[] ATTENUATE_MODIFIER = {0, 40, 75, 160};
     }
 }

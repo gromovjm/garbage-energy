@@ -37,7 +37,7 @@ info.GarbageEnergy.augment.energyAmplifier=Item RF generator: Energy output ampl
 info.GarbageEnergy.augment.energyAmplifier.info=x%s Energy output
 
 info.GarbageEnergy.augment.attenuateModifier=Item RF generator: Attunate process time
-info.GarbageEnergy.augment.attenuateModifier.info=-%s per tick
+info.GarbageEnergy.augment.attenuateModifier.info=-%s%% per tick
 
 info.GarbageEnergy.generator.rfFromItem=RF * item
 info.GarbageEnergy.scanner.saveResult=Save result
