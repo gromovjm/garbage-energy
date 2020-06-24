@@ -82,17 +82,17 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
         // Configure generator energy.
         for (int i = 0; i < BlockGenerator.Types.values().length; i++) {
             String generatorName = "Generator." + StringHelper.titleCase(BlockGenerator.NAMES[i]);
-            int maxPower = MathHelper.clamp(GarbageEnergy.config.get(generatorName, "BasePower", 8), 1, 16);
-            GarbageEnergy.config.set(generatorName, "BasePower", maxPower);
+            comment = "Max power output.";
+            int maxPower = GarbageEnergy.config.get(generatorName, "BasePower", 8, comment);
             defaultEnergyConfig[i] = new EnergyConfig();
-            defaultEnergyConfig[i].setParamsPower(maxPower);
+            defaultEnergyConfig[i].setParams(maxPower);
 
             comment = "Reduces process time.";
             attenuateModifier[i] = (float) GarbageEnergy.config.get(generatorName, "AttenuateModifier", 0.01F, comment);
+
             comment = "Increases output energy.";
             energyAmplifier[i] = GarbageEnergy.config.get(generatorName, "EnergyAmplifier", 1, comment);
         }
-
     }
 
     @Override
@@ -115,25 +115,12 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
 
     protected int calcEnergy()
     {
-        int energy = 0;
-
-        if (isActive) {
-            if (energyStorage.getEnergyStored() < config.minPowerLevel) {
-                energy = config.maxPower;
-            } else if (energyStorage.getEnergyStored() > config.maxPowerLevel) {
-                energy = config.minPower;
-            } else {
-                energy = (energyStorage.getMaxEnergyStored() - energyStorage.getEnergyStored()) / config.energyRamp;
-            }
-        }
-
-        return (int) (energy * fuelValue);
+        return MathHelper.round((energyStorage.getMaxEnergyStored() - energyStorage.getEnergyStored()) * fuelValue / config.energyRamp);
     }
 
     protected int getEnergyModifier()
     {
-        int modifier = (int) (attenuateModifier[getType()] * energyAmplifier[getType()] * augmentEnergyAmplifierValue * 100);
-        return modifier > 0 ? modifier : 1;
+        return energyAmplifier[getType()] * augmentEnergyAmplifierValue;
     }
 
     public IEnergyStorage getEnergyStorage()
@@ -354,7 +341,7 @@ public abstract class TileGeneratorBase extends TileAugmentable implements IEner
 
     protected int getEnergyOfItem()
     {
-        return isActive ? MathHelper.clamp(calcEnergy() * getEnergyModifier(), config.minPower, config.maxPower) : 0;
+        return fuelValue > 0 ? MathHelper.clamp(calcEnergy() * getEnergyModifier(), config.minPower, config.maxPower) : 0;
     }
 
     //

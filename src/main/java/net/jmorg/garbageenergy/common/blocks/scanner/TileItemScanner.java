@@ -2,7 +2,6 @@ package net.jmorg.garbageenergy.common.blocks.scanner;
 
 import cofh.core.network.PacketCoFHBase;
 import cofh.lib.util.helpers.ItemHelper;
-import cofh.lib.util.helpers.MathHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.jmorg.garbageenergy.GarbageEnergy;
 import net.jmorg.garbageenergy.common.gui.client.scanner.ItemScannerGui;
@@ -40,10 +39,9 @@ public class TileItemScanner extends TileScanner
         int type = BlockScanner.Types.ITEM.ordinal();
 
         String category = "Scanner.Item";
-        int basePower = MathHelper.clamp(GarbageEnergy.config.get(category, "BasePower", 20), 10, 500);
-        GarbageEnergy.config.set(category, "BasePower", basePower);
+        int basePower = GarbageEnergy.config.get(category, "BasePower", 20);
         defaultEnergyConfig[type] = new EnergyConfig();
-        defaultEnergyConfig[type].setParamsPower(basePower);
+        defaultEnergyConfig[type].setParams(basePower);
 
         GameRegistry.registerTileEntity(TileItemScanner.class, GarbageEnergy.MODID + ".Scanner.Item");
     }

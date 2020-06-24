@@ -85,9 +85,6 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
         if (ServerHelper.isClientWorld(worldObj)) {
             return;
         }
-        if (hasChargeSlot() && inventory[getChargeSlot()] != null) {
-            charge();
-        }
 
         boolean wasActive = isActive;
         isActive = shouldActive();
@@ -95,8 +92,10 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
 
         if (redstoneControlOrDisable() && isActive) {
             checkAndReset();
-            scan();
-            consumeEnergy();
+            if (energyStorage.getEnergyStored() > energyConfig.minPowerLevel) {
+                scan();
+                consumeEnergy();
+            }
         } else {
             checkAndReset();
             isActive = false;
@@ -104,6 +103,10 @@ public abstract class TileScanner extends TilePowered implements ISidedInventory
 
         if ((wasActive != isActive && !isFinished) || (isFinished && tracker.hasDelayPassed(worldObj, 10))) {
             sendUpdatePacket(Side.CLIENT);
+        }
+
+        if (hasChargeSlot() && inventory[getChargeSlot()] != null) {
+            charge();
         }
     }
 
