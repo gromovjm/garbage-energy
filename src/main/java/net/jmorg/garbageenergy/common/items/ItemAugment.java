@@ -18,6 +18,9 @@ public class ItemAugment extends ItemBase implements IAugmentItem
 {
     TIntObjectHashMap<AugmentEntry> augmentMap = new TIntObjectHashMap<AugmentEntry>();
 
+    public ItemStack[] attenuateModifiers = new ItemStack[Augments.NUM_ATTENUATE_MODIFIER];
+    public ItemStack[] energyAmplifiers = new ItemStack[Augments.NUM_ENERGY_AMPLIFIER];
+
     public ItemAugment()
     {
         super(GarbageEnergy.MODID);
@@ -30,12 +33,12 @@ public class ItemAugment extends ItemBase implements IAugmentItem
     {
         // Register attenuate amplifier augment
         for (int i = 0; i < Augments.NUM_ATTENUATE_MODIFIER; i++) {
-            addItem(48 + i, Augments.ATTENUATE_MODIFIER_NAME, 1 + i, 0);
+            attenuateModifiers[i] = addItem(48 + i, Augments.ATTENUATE_MODIFIER_NAME, 1 + i, 0);
         }
 
         // Register energy amplifier augment
         for (int i = 0; i < Augments.NUM_ENERGY_AMPLIFIER; i++) {
-            addItem(64 + i, Augments.ENERGY_AMPLIFIER_NAME, 1 + i, 0);
+            energyAmplifiers[i] = addItem(64 + i, Augments.ENERGY_AMPLIFIER_NAME, 1 + i, 0);
         }
     }
 
@@ -86,9 +89,9 @@ public class ItemAugment extends ItemBase implements IAugmentItem
         }
     }
 
-    public void addItem(int metadata, String name, int level, int numInfo)
+    public ItemStack addItem(int metadata, String name, int level, int numInfo)
     {
-        super.addItem(metadata, name + level);
+        ItemStack itemStack = super.addItem(metadata, name + level);
 
         if (!augmentMap.containsKey(metadata)) {
             augmentMap.put(metadata, new AugmentEntry());
@@ -97,6 +100,8 @@ public class ItemAugment extends ItemBase implements IAugmentItem
             augmentMap.get(metadata).numInfo = numInfo;
         }
         augmentMap.get(metadata).augmentTypeInfo.put(name, level);
+
+        return itemStack;
     }
 
     private String getPrimaryType(ItemStack stack)

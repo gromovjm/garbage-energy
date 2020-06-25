@@ -30,5 +30,13 @@ public class GarbageEnergyItem
         GameRegistry.addRecipe(dataCard.uncommon, "III", "DCD", "III", 'I', Items.iron_ingot, 'C', dataCard.common, 'D', Items.diamond);
         GameRegistry.addRecipe(dataCard.rare, " D ", "DCD", " D ", 'C', dataCard.uncommon, 'D', Items.diamond);
         GameRegistry.addRecipe(dataCard.epic, "IDI", "DCD", "IDI", 'I', Items.iron_ingot, 'C', dataCard.rare, 'D', Items.diamond);
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(augment.energyAmplifiers[0], " N ", "NXN", " N ", 'N', "ingotIron", 'X', Items.blaze_powder));
+        GameRegistry.addRecipe(new ShapedOreRecipe(augment.energyAmplifiers[1], "YNY", "BXB", "YNY", 'N', "ingotIron", 'X', Items.blaze_powder, 'B', Items.blaze_rod, 'Y', "dustRedstone"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(augment.energyAmplifiers[2], "DND", "NXN", "DND", 'N', "ingotIron", 'X', Items.blaze_powder, 'D', "gemDiamond"));
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(augment.attenuateModifiers[0], " N ", "NXN", " N ", 'N', "ingotIron", 'X', Items.gunpowder));
+        GameRegistry.addRecipe(new ShapedOreRecipe(augment.attenuateModifiers[1], "YNY", "NXN", "YNY", 'N', "ingotGold", 'X', Items.gunpowder, 'Y', "dustRedstone"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(augment.attenuateModifiers[2], "DND", "NXN", "DND", 'N', "ingotGold", 'X', Items.gunpowder, 'D', "gemDiamond"));
     }
 }
