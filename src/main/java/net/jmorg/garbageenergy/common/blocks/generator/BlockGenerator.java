@@ -9,8 +9,10 @@ import net.jmorg.garbageenergy.common.blocks.BaseBlock;
 import net.jmorg.garbageenergy.common.items.ItemBlockGenerator;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -18,6 +20,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 public class BlockGenerator extends BaseBlock
 {
@@ -29,8 +33,7 @@ public class BlockGenerator extends BaseBlock
     public static IIcon activeOppositeSide;
 
     public static ItemStack itemRf;
-    public static ItemStack receiver;
-    public static ItemStack transmitter;
+    public static ItemStack itemAnnihilation;
 
     public BlockGenerator()
     {
@@ -46,8 +49,10 @@ public class BlockGenerator extends BaseBlock
     public boolean initialize()
     {
         TileGeneratorBase.configure();
+        TileItemAnnihilationGenerator.initialize();
         TileItemRFGenerator.initialize();
 
+        itemAnnihilation = registerItemStack(NAME + ".ItemAnnihilation", Types.ITEM_ANNIHILATION);
         itemRf = registerItemStack(NAME + ".ItemRf", Types.ITEM_RF);
 
         return true;
@@ -109,13 +114,13 @@ public class BlockGenerator extends BaseBlock
         return BaseBlock.getTileName("generator." + tileName);
     }
 
-//    @Override
-//    public void getSubBlocks(Item item, CreativeTabs tab, List list)
-//    {
-//        for (int i = 0; i < Types.values().length; i++) {
-//            list.add(ItemBlockGenerator.setDefaultTag(new ItemStack(item, 1, i)));
-//        }
-//    }
+    @Override
+    public void getSubBlocks(Item item, CreativeTabs tab, List list)
+    {
+        for (int i = 0; i < Types.values().length; i++) {
+            list.add(ItemBlockGenerator.setDefaultTag(new ItemStack(item, 1, i)));
+        }
+    }
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata)
@@ -125,6 +130,8 @@ public class BlockGenerator extends BaseBlock
         switch (Types.values()[metadata]) {
             case ITEM_RF:
                 return new TileItemRFGenerator();
+            case ITEM_ANNIHILATION:
+                return new TileItemAnnihilationGenerator();
             default:
                 return null;
         }
@@ -174,10 +181,10 @@ public class BlockGenerator extends BaseBlock
         return tag;
     }
 
-    public static final String[] NAMES = {"itemRf"};
+    public static final String[] NAMES = {"itemRf", "itemAnnihilation"};
 
     public enum Types
     {
-        ITEM_RF,
+        ITEM_RF, ITEM_ANNIHILATION,
     }
 }
