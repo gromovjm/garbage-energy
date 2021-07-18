@@ -1,183 +1,245 @@
 package net.jmorg.garbageenergy.common.blocks.generator;
 
-import cofh.api.tileentity.ISidedTexture;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.jmorg.garbageenergy.GarbageEnergy;
-import net.jmorg.garbageenergy.common.blocks.BaseBlock;
+import cofh.core.init.CoreProps;
+import cofh.core.util.helpers.ItemHelper;
+import net.jmorg.garbageenergy.GEProperties;
+import net.jmorg.garbageenergy.common.blocks.GarbageEnergyBlock;
+import net.jmorg.garbageenergy.common.items.GarbageEnergyItem;
 import net.jmorg.garbageenergy.common.items.ItemBlockGenerator;
+import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.client.model.ModelLoader;
 
-public class BlockGenerator extends BaseBlock
+import javax.annotation.Nullable;
+
+public class BlockGenerator extends GarbageEnergyBlock implements ITileEntityProvider
 {
-    public static final String NAME = GarbageEnergy.MODID + ".Generator";
+    public static final PropertyDirection FACING = BlockHorizontal.FACING;
+    public static final PropertyEnum<Types> VARIANT = PropertyEnum.create("type", Types.class);
+    public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
-    public static IIcon[] face = new IIcon[Types.values().length];
-    public static IIcon[] faceActive = new IIcon[Types.values().length];
-    public static IIcon oppositeSide;
-    public static IIcon activeOppositeSide;
+    public static boolean[] enable = new boolean[Types.values().length];
+    private static boolean keepInventory;
 
-    public static ItemStack itemRf;
-    public static ItemStack receiver;
-    public static ItemStack transmitter;
+    public ItemStack crucible;
 
     public BlockGenerator()
     {
-        super(Material.rock);
-        setBlockName(NAME);
+        super(Material.IRON);
+
+        setUnlocalizedName("generator");
         setHardness(15.0F);
         setResistance(25.0F);
 
-        basicGui = true;
+        setDefaultState(state
+                .withProperty(FACING, EnumFacing.NORTH)
+                .withProperty(VARIANT, Types.CRUCIBLE)
+                .withProperty(ACTIVE, false)
+        );
+    }
+
+    @Override
+    public boolean preInit()
+    {
+        TileGeneratorBase.configure();
+
+        // Initialize generators
+        TileCrucibleGenerator.initialize();
+        enable[Types.CRUCIBLE.getMetadata()] = TileCrucibleGenerator.enable;
+
+        return true;
     }
 
     @Override
     public boolean initialize()
     {
-        TileGeneratorBase.configure();
-        TileItemRFGenerator.initialize();
-
-        itemRf = registerItemStack(NAME + ".ItemRf", Types.ITEM_RF);
+        crucible = GarbageEnergyItem.blockGenerator.setDefaultTag(new ItemStack(this, 1, Types.CRUCIBLE.getMetadata()));
 
         return true;
     }
 
-    private ItemStack registerItemStack(String name, Types type)
+    @Override
+    protected BlockStateContainer createBlockState()
     {
-        ItemStack itemStack = ItemBlockGenerator.setDefaultTag(new ItemStack(this, 1, type.ordinal()));
-        GameRegistry.registerCustomItemStack(name, itemStack);
-        return itemStack;
+        return new BlockStateContainer(this, FACING, VARIANT, ACTIVE);
     }
 
     @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        ISidedTexture tile = (ISidedTexture) world.getTileEntity(x, y, z);
-        return tile == null ? null : tile.getTexture(side, renderPass);
-    }
+        ItemBlockGenerator itemBlock = GarbageEnergyItem.blockGenerator;
+        int i;
 
-    @Override
-    public IIcon getIcon(int side, int metadata)
-    {
-        if (side == 2) {
-            return oppositeSide;
-        }
-        return side != 3 ? super.getIcon(side, metadata) : face[metadata % Types.values().length];
-    }
+        for (Types type : Types.values()) {
+            i = type.getMetadata();
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegistry)
-    {
-        super.registerBlockIcons(iconRegistry);
+            if (!enable[i]) continue;
 
-        oppositeSide = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/opposite_side");
-        activeOppositeSide = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/active_opposite_side");
-
-        for (int i = 0; i < Types.values().length; i++) {
-            face[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/face_" + NAMES[i]);
-            faceActive[i] = iconRegistry.registerIcon(GarbageEnergy.MODID + ":generator/active_face_" + NAMES[i]);
+            if (GEProperties.creativeTabShowAllBlockLevels) {
+                for (int j = 0; j <= CoreProps.LEVEL_MAX; j++) {
+                    items.add(itemBlock.setDefaultTag(new ItemStack(this, 1, i), j));
+                }
+            } else {
+                items.add(itemBlock.setDefaultTag(new ItemStack(this, 1, i), GEProperties.creativeTabLevel));
+            }
+            if (GEProperties.creativeTabShowCreative) {
+                items.add(itemBlock.setCreativeTag(new ItemStack(this, 1, i)));
+            }
         }
     }
 
+
+    @Nullable
     @Override
-    public boolean postInit()
+    public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        GameRegistry.addRecipe(itemRf, "I#I", "I I", "ROR", 'O', Blocks.obsidian, 'R', Items.redstone, 'I', Items.iron_ingot, '#', Blocks.iron_bars);
+        if (Types.CRUCIBLE.getMetadata() == meta) {
+            return new TileCrucibleGenerator();
+        }
 
-        return true;
+        return null;
     }
-
-    public static void refreshItemStacks()
-    {
-        ItemBlockGenerator.setDefaultTag(itemRf);
-    }
-
-    public static String getTileName(String tileName)
-    {
-        return BaseBlock.getTileName("generator." + tileName);
-    }
-
-//    @Override
-//    public void getSubBlocks(Item item, CreativeTabs tab, List list)
-//    {
-//        for (int i = 0; i < Types.values().length; i++) {
-//            list.add(ItemBlockGenerator.setDefaultTag(new ItemStack(item, 1, i)));
-//        }
-//    }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata)
+    public void registerModels()
     {
-        if (metadata >= Types.values().length) return null;
-
-        switch (Types.values()[metadata]) {
-            case ITEM_RF:
-                return new TileItemRFGenerator();
-            default:
-                return null;
+        for (Types type : Types.values()) {
+            ModelResourceLocation model = new ModelResourceLocation(modName + ":" + type);
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), type.getMetadata(), model);
         }
     }
 
     @Override
-    public int getRenderBlockPass()
+    public String getUnlocalizedName(ItemStack stack)
     {
-        return 1;
+        return getUnlocalizedName() + "." + getNameFromItemStack(stack) + ".name";
     }
 
     @Override
-    public boolean canRenderInPass(int pass)
+    public String getNameFromItemStack(ItemStack stack)
     {
-        renderPass = pass;
-        return pass < 1;
+        return Types.values()[ItemHelper.getItemDamage(stack)].getName();
     }
 
     @Override
-    public boolean isNormalCube(IBlockAccess world, int x, int y, int z)
+    public int getMetaFromState(IBlockState state)
     {
-        return false;
+        return state.getValue(VARIANT).getMetadata();
+    }
+
+    public static void setState(boolean active, World worldIn, BlockPos pos)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        keepInventory = true;
+
+        worldIn.setBlockState(pos, GarbageEnergyBlock.generator.getDefaultState().withProperty(ACTIVE, active));
+
+        keepInventory = false;
+
+        if (tileEntity != null)
+        {
+            tileEntity.validate();
+            worldIn.setTileEntity(pos, tileEntity);
+
+//            GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+//
+//            if (currentScreen instanceof GeneratorGui) {
+//                ((GeneratorGui) currentScreen).setTile((TileGeneratorBase) tileEntity);
+//            }
+        }
     }
 
     @Override
-    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
-        return true;
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
-    public boolean renderAsNormalBlock()
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase living, ItemStack stack)
     {
-        return true;
-    }
+        if (stack.getTagCompound() != null) {
+            TileGeneratorBase tile = (TileGeneratorBase) world.getTileEntity(pos);
 
-    @Override
-    public NBTTagCompound getItemStackTag(World world, int x, int y, int z)
-    {
-        NBTTagCompound tag = super.getItemStackTag(world, x, y, z);
-        TileGeneratorBase tile = (TileGeneratorBase) getTile(world, x, y, z);
-
-        if (tag != null && tile != null) {
-            tag.setInteger("Energy", tile.getEnergyStored(ForgeDirection.UNKNOWN));
+//            tile.setLevel(stack.getTagCompound().getByte("Level"));
+            tile.readAugmentsFromNBT(stack.getTagCompound());
+            tile.updateAugmentStatus();
+            tile.setEnergyStored(stack.getTagCompound().getInteger(CoreProps.ENERGY));
         }
 
-        return tag;
+        super.onBlockPlacedBy(world, pos, state, living, stack);
     }
 
-    public static final String[] NAMES = {"itemRf"};
-
-    public enum Types
+    @Override
+    public int damageDropped(IBlockState state)
     {
-        ITEM_RF,
+        return state.getValue(VARIANT).getMetadata();
+    }
+
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+    {
+        if (!keepInventory)
+        {
+            TileEntity tileentity = worldIn.getTileEntity(pos);
+
+            if (tileentity instanceof TileGeneratorBase)
+            {
+                InventoryHelper.dropInventoryItems(worldIn, pos, (TileGeneratorBase) tileentity);
+                worldIn.updateComparatorOutputLevel(pos, this);
+            }
+        }
+
+        super.breakBlock(worldIn, pos, state);
+    }
+
+    @Override
+    protected void addRecipes()
+    {
+        // null
+    }
+
+    public enum Types implements IStringSerializable
+    {
+        CRUCIBLE(0, "crucible"),
+        ;
+
+        Types(int metadata, String name)
+        {
+            this.metadata = metadata;
+            this.name = name;
+        }
+
+        public int getMetadata()
+        {
+            return this.metadata;
+        }
+
+        @Override
+        public String getName()
+        {
+            return this.name;
+        }
+
+        private final int metadata;
+        private final String name;
     }
 }

@@ -1,6 +1,6 @@
 [
 {
-  "modid": "GarbageEnergy",
+  "modid": "garbageenergy",
   "name": "Garbage Energy",
   "description": "Get Energy from your garbage!",
   "version": "${version}",

@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "active=false,facing=north,type=crucible": { "model": "garbageenergy:crucible" },
+    "active=true,facing=north,type=crucible": { "model": "garbageenergy:active_crucible" },
+    "active=false,facing=east,type=crucible":  { "model": "garbageenergy:crucible", "y": 90 },
+    "active=true,facing=east,type=crucible":  { "model": "garbageenergy:active_crucible", "y": 90 },
+    "active=false,facing=south,type=crucible": { "model": "garbageenergy:crucible", "y": 180 },
+    "active=true,facing=south,type=crucible": { "model": "garbageenergy:active_crucible", "y": 180 },
+    "active=false,facing=west,type=crucible":  { "model": "garbageenergy:crucible", "y": 270 },
+    "active=true,facing=west,type=crucible":  { "model": "garbageenergy:active_crucible", "y": 270 }
+  }
+}

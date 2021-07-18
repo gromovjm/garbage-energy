@@ -1,0 +1,7 @@
+{
+  "parent": "garbageenergy:block/garbage_energy_block",
+  "textures": {
+    "front": "garbageenergy:blocks/generator/active_crucible_face",
+    "back": "garbageenergy:blocks/generator/active_crucible_opposite"
+  }
+}

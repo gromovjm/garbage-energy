@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "garbageenergy:blocks/top_side",
+    "bottom": "garbageenergy:blocks/bottom_side",
+    "side": "garbageenergy:blocks/side"
+  }
+}

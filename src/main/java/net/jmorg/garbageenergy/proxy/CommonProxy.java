@@ -1,24 +1,44 @@
 package net.jmorg.garbageenergy.proxy;
 
-import cofh.core.Proxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cofh.core.proxy.Proxy;
+import net.jmorg.garbageenergy.GarbageEnergy;
+import net.jmorg.garbageenergy.common.blocks.GarbageEnergyBlock;
+import net.jmorg.garbageenergy.network.PacketCore;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+@Mod.EventBusSubscriber
 public class CommonProxy extends Proxy
 {
     @Override
-    public void preInit()
+    public void preInit(FMLPreInitializationEvent event)
     {
-        // null
+        super.preInit(event);
+
+        MinecraftForge.EVENT_BUS.register(FMLEventHandler.INSTANCE);
     }
 
-    public void init(FMLInitializationEvent event)
+    @Override
+    public void initialize(FMLInitializationEvent event)
     {
-        // null
+        super.initialize(event);
+
+        NetworkRegistry.INSTANCE.registerGuiHandler(GarbageEnergy.instance, GarbageEnergy.guiHandler);
+//        MinecraftForge.EVENT_BUS.register(RegistryEventHandler.INSTANCE);
+
+        // Packets
+        PacketCore.initialize();
     }
 
+    @Override
     public void postInit(FMLPostInitializationEvent event)
     {
-        // null
+        super.postInit(event);
+
+        GarbageEnergyBlock.postInit();
     }
 }

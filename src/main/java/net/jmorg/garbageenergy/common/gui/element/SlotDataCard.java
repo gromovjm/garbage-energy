@@ -1,8 +1,7 @@
 package net.jmorg.garbageenergy.common.gui.element;
 
-import cofh.lib.gui.slot.ISlotValidator;
-import cofh.lib.gui.slot.SlotValidated;
-import net.jmorg.garbageenergy.common.items.ItemDataCard;
+import cofh.core.gui.slot.ISlotValidator;
+import cofh.core.gui.slot.SlotValidated;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -15,7 +14,8 @@ public class SlotDataCard extends SlotValidated
             @Override
             public boolean isItemValid(ItemStack itemStack)
             {
-                return itemStack.getItem() instanceof ItemDataCard;
+                //return itemStack.getItem() instanceof ItemDataCard;
+                return false;
             }
         }, iInventory, i, i1, i2);
     }

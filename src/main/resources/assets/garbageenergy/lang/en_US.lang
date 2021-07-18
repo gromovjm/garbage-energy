@@ -1,56 +1,64 @@
 # items
-item.GarbageEnergy.wrench.name=Wrench
-item.GarbageEnergy.dataCard.CommonCard.name=Disk
-item.GarbageEnergy.dataCard.UncommonCard.name=Uncommon disk
-item.GarbageEnergy.dataCard.RareCard.name=Rare disk
-item.GarbageEnergy.dataCard.EpicCard.name=Epick disk
-item.GarbageEnergy.dataCard.info=Stores scanning results for %s items.
+item.garbageenergy.wrench.name=Wrench
+item.garbageenergy.dataCard.CommonCard.name=Disk
+item.garbageenergy.dataCard.UncommonCard.name=Uncommon disk
+item.garbageenergy.dataCard.RareCard.name=Rare disk
+item.garbageenergy.dataCard.EpicCard.name=Epick disk
+item.garbageenergy.dataCard.info=Stores scanning results for %s items.
 
 # augments
-item.GarbageEnergy.augment.energyAmplifier1.name=Elementary charge
-item.GarbageEnergy.augment.energyAmplifier2.name=Cumulative charge
-item.GarbageEnergy.augment.energyAmplifier3.name=Heavy cumulative charge
+item.garbageenergy.augment.energyAmplifier1.name=Elementary charge
+item.garbageenergy.augment.energyAmplifier2.name=Cumulative charge
+item.garbageenergy.augment.energyAmplifier3.name=Heavy cumulative charge
 
-item.GarbageEnergy.augment.attenuateModifier1.name=Space destroyer
-item.GarbageEnergy.augment.attenuateModifier2.name=Space-time destroyer
-item.GarbageEnergy.augment.attenuateModifier3.name=Heavy time destroyer
+item.garbageenergy.augment.attenuateModifier1.name=Space destroyer
+item.garbageenergy.augment.attenuateModifier2.name=Space-time destroyer
+item.garbageenergy.augment.attenuateModifier3.name=Heavy time destroyer
 
 # blocks
-tile.GarbageEnergy.generator.itemRf.name=Item RF generator
-tile.GarbageEnergy.scanner.item.name=Item scanner
+tile.garbageenergy.generator.crucible.name=Crucible
+tile.garbageenergy.scanner.item.name=Item scanner
 
 # CoFHCore GUI tabs
-info.tab.GarbageEnergy.generator.0=Use this generator for produce energy from resources that you not needed.
-info.tab.GarbageEnergy.generator.itemRf.0=For producing RF you should put to genrator disk with information about items.
-info.tab.GarbageEnergy.generator.itemRf.1=Other items, except ithems that have own energy modifier, you cannot put to genrator.
-info.tab.GarbageEnergy.generator.itemRf.2=Do not put your diamonds to it!
+info.tab.garbageenergy.generator=Use this generator for produce energy from resources that you not needed.
+info.tab.garbageenergy.generator.crucible.0=For producing RF you should put to genrator disk with information about items.
+info.tab.garbageenergy.generator.crucible.1=Other items, except ithems that have own energy modifier, you cannot put to genrator.
+info.tab.garbageenergy.generator.crucible.2=Do not put your diamonds to it!
 
-info.tab.GarbageEnergy.scanner.item.0=Scans items or blocks and shows energy modifier for it for Item RF generator.
-info.tab.GarbageEnergy.scanner.item.1=You can put card to appropriate slot and after scanning save result to it.
-info.tab.GarbageEnergy.scanner.item.2=The recorded card can be placed in the generator and you can generate energy from the objects information about which it contains.
+info.tab.garbageenergy.scanner.item.0=Scans items or blocks and shows energy modifier for it for Item RF generator.
+info.tab.garbageenergy.scanner.item.1=You can put card to appropriate slot and after scanning save result to it.
+info.tab.garbageenergy.scanner.item.2=The recorded card can be placed in the generator and you can generate energy from the objects information about which it contains.
 
-info.GarbageEnergy.augment=Augment
-info.GarbageEnergy.augment.levels.0=Requires previous levels to be installed.
-info.GarbageEnergy.augment.levels.1=Highest Level Augment is used.
+info.garbageenergy.level.0=Basic
+info.garbageenergy.level.1=Hardened
+info.garbageenergy.level.2=Reinforced
+info.garbageenergy.level.3=Signalum
+info.garbageenergy.level.4=Resonant
+info.garbageenergy.level.creative=Creative
 
-info.GarbageEnergy.augment.energyAmplifier=Item RF generator: Energy output amplifier
-info.GarbageEnergy.augment.energyAmplifier.info=x%s Energy output
+info.garbageenergy.augment=Augment
+info.garbageenergy.augment.levels.0=Requires previous levels to be installed.
+info.garbageenergy.augment.levels.1=Highest Level Augment is used.
 
-info.GarbageEnergy.augment.attenuateModifier=Item RF generator: Attunate process time
-info.GarbageEnergy.augment.attenuateModifier.info=-%s%% per tick
+info.garbageenergy.augment.energyAmplifier=Item RF generator: Energy output amplifier
+info.garbageenergy.augment.energyAmplifier.info=x%s Energy output
 
-info.GarbageEnergy.generator.rfFromItem=RF * item
-info.GarbageEnergy.scanner.saveResult=Save result
-info.GarbageEnergy.scanner.reset=Reset result
-info.GarbageEnergy.scanner.scanning=Scanning...
-info.GarbageEnergy.scanner.scanned=Scanned.
-info.GarbageEnergy.scanner.idle=Idle.
-info.GarbageEnergy.scanner.idle.nei=Put an item to slot.
-info.GarbageEnergy.scanner.idle.disabled=Scanner is disabled.
-info.GarbageEnergy.scanner.process=Process
-info.GarbageEnergy.scanner.leftTime=Left time
-info.GarbageEnergy.scanner.item=Item
-info.GarbageEnergy.scanner.energyModifier=Energy mod
+info.garbageenergy.augment.attenuateModifier=Item RF generator: Attunate process time
+info.garbageenergy.augment.attenuateModifier.info=-%s%% per tick
+
+info.garbageenergy.generator.rfFromItem=RF * item
+
+info.garbageenergy.scanner.saveResult=Save result
+info.garbageenergy.scanner.reset=Reset result
+info.garbageenergy.scanner.scanning=Scanning...
+info.garbageenergy.scanner.scanned=Scanned.
+info.garbageenergy.scanner.idle=Idle.
+info.garbageenergy.scanner.idle.nei=Put an item to slot.
+info.garbageenergy.scanner.idle.disabled=Scanner is disabled.
+info.garbageenergy.scanner.process=Process
+info.garbageenergy.scanner.leftTime=Left time
+info.garbageenergy.scanner.item=Item
+info.garbageenergy.scanner.energyModifier=Energy mod
 
 # Tooltips
 tooltip.EMC.unique=Own energy mod
@@ -58,4 +66,4 @@ tooltip.EMC=x%s from %s
 tooltip.dataCard.containInfoAbout=Contains information about:
 
 # creativetabs
-itemGroup.garbageEnergy=Garbage energy
+itemGroup.garbageenergy=Garbage Energy
