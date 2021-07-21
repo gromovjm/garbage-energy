@@ -25,8 +25,8 @@ public class GarbageEnergy
     public static final String MODID = "garbageenergy";
     public static final String MODNAME = "Garbage Energy";
     public static final String MODGUIFACTORY = "net.jmorg.garbageenergy.common.gui.GuiFactory";
-    public static final String VERSION = "2.0.1b1";
-    public static final String VERSION_MAX = "2.1.0b1";
+    public static final String VERSION = "2.0.1b2";
+    public static final String VERSION_MAX = "2.1.0b2";
     public static final String VERSION_GROUP = "required-after:" + MODID + "@[" + VERSION + "," + VERSION_MAX + ");";
     public static final String DEPENDENCIES = CoFHCore.VERSION_GROUP + ThermalFoundation.VERSION_GROUP;
     public static final String UPDATE_URL = "https://raw.github.com/gromovjm/garbage-energy/mc1.12.2/version.json";
