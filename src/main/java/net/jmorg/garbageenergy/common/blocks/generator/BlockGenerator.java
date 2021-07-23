@@ -158,12 +158,6 @@ public class BlockGenerator extends GarbageEnergyBlock implements ITileEntityPro
         {
             tileEntity.validate();
             worldIn.setTileEntity(pos, tileEntity);
-
-//            GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-//
-//            if (currentScreen instanceof GeneratorGui) {
-//                ((GeneratorGui) currentScreen).setTile((TileGeneratorBase) tileEntity);
-//            }
         }
     }
 
