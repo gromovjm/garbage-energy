@@ -29,7 +29,7 @@ public class GarbageEnergy
     public static final String VERSION_MAX = "2.2.0";
     public static final String VERSION_GROUP = "required-after:" + MODID + "@[" + VERSION + "," + VERSION_MAX + ");";
     public static final String DEPENDENCIES = CoFHCore.VERSION_GROUP + ThermalFoundation.VERSION_GROUP;
-    public static final String UPDATE_URL = "https://raw.github.com/gromovjm/garbage-energy/mc1.12.2/version.json";
+    public static final String UPDATE_URL = "https://raw.github.com/gromovjm/garbage-energy/mc1.12.2/update.json";
 
     @Mod.Instance(MODID)
     public static GarbageEnergy instance;
